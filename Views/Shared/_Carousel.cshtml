@@ -1,0 +1,13 @@
+@model string
+
+<div class="carousel-container">
+    <img class="carousel-image" src="@Model" alt="Imagine carusel">
+    <div class="carousel-buttons">
+        <form asp-controller="Home" asp-action="Previous" method="post">
+            <button type="submit" name="previous_image"><img src="~/images/previous.png" alt="Imaginea anterioară"></button>
+        </form>
+        <form asp-controller="Home" asp-action="Next" method="post">
+            <button type="submit" name="next_image"><img src="~/images/next.png" alt="Imaginea următoare"></button>
+        </form>
+    </div>
+</div>

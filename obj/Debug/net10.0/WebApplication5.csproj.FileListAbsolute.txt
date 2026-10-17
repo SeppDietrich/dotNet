@@ -69,8 +69,6 @@
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/02avk6ddpz-{0}-63fj8s7r0e-63fj8s7r0e.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/mtkx9seipz-{0}-0j3bgjxly4-0j3bgjxly4.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/fjgrnw6qco-{0}-47otxtyo56-47otxtyo56.gz
-/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/pvkvew6xae-{0}-4v8eqarkd7-4v8eqarkd7.gz
-/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/ru6yfk74jf-{0}-l3n5xuwxn8-l3n5xuwxn8.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/gdc24waovh-{0}-ilo7uva0vt-ilo7uva0vt.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/niz58wxvdf-{0}-qlccset4i1-qlccset4i1.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/it9qvu2kc2-{0}-lzl9nlhx6b-lzl9nlhx6b.gz
@@ -82,7 +80,6 @@
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/yvvboyr8by-{0}-2z0ns9nrw6-2z0ns9nrw6.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/ar0gc8kbpf-{0}-muycvpuwrr-muycvpuwrr.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/wcr0bmtqsd-{0}-87fc7y1x7t-87fc7y1x7t.gz
-/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/7cuvl8pe9m-{0}-jfsiqqwiad-jfsiqqwiad.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/r3jhow1sqv-{0}-mwr4a0ztss-mwr4a0ztss.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/35m6bjv1io-{0}-mwr4a0ztss-mwr4a0ztss.gz
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/staticwebassets.build.json
@@ -95,3 +92,13 @@
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/WebApplication5.pdb
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/WebApplication5.genruntimeconfig.cache
 /home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/ref/WebApplication5.dll
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/WebApplication5.sourcelink.json
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/pvkvew6xae-{0}-48y08845bh-48y08845bh.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/ru6yfk74jf-{0}-356vix0kms-356vix0kms.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/7cuvl8pe9m-{0}-wvv7n406my-wvv7n406my.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/eypk38k3iv-{0}-j3pq9jlcbv-j3pq9jlcbv.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/xp4eagrpe9-{0}-iblwvmbd5v-iblwvmbd5v.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/ddp0k9z6o3-{0}-79342emg0h-79342emg0h.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/xn9mcmmwil-{0}-325qad57jl-325qad57jl.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/pf59eiqiur-{0}-x3yusl7r0w-x3yusl7r0w.gz
+/home/niggu/RiderProjects/WebApplication5/WebApplication5/obj/Debug/net10.0/compressed/589j32ufp5-{0}-kmwxejftjc-kmwxejftjc.gz

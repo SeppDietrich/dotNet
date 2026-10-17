@@ -1,0 +1,14 @@
+@using Microsoft.Extensions.Options
+@inject IOptions<AppInfoOptions> AppInfo
+
+<footer class="site-footer">
+    <p>
+        <span>Versiune aplicație: @AppInfo.Value.Versiune</span>
+        <span class="separator">|</span>
+        <span>Autor: @AppInfo.Value.Autor</span>
+        <span class="separator">|</span>
+        <span>Grupa: @AppInfo.Value.Grupa</span>
+        <span class="separator">|</span>
+        <span>&copy; @DateTime.Now.Year</span>
+    </p>
+</footer>

@@ -1,0 +1,24 @@
+<header class="site-header">
+    <div class="list-header">
+        <div class="dropdown-button nav-item">
+            <button type="button" class="icon-btn" aria-haspopup="true">
+                <img src="~/images/dropdown.png" alt="Meniu">
+            </button>
+            <div class="dropdown-content">
+                <a asp-controller="Home" asp-action="Index">Acasă</a>
+                <a asp-controller="Home" asp-action="About">Despre</a>
+                <a asp-controller="Abonamente" asp-action="Index">Abonamente</a>
+                <a asp-controller="Feedback" asp-action="Index">Feedback</a>
+                <a asp-controller="Home" asp-action="Contact">Contact</a>
+            </div>
+        </div>
+
+        <a class="brand" asp-controller="Home" asp-action="Index">TransAbon</a>
+
+        <div class="login-button nav-item">
+            <a class="icon-btn" asp-controller="Account" asp-action="Login">
+                <img src="~/images/loggin.png" alt="Autentificare">
+            </a>
+        </div>
+    </div>
+</header>

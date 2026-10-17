@@ -1,0 +1,45 @@
+.carousel-container {
+    position: relative;
+    width: 100vw;
+}
+
+.carousel-image {
+    display: block;
+    width: 100vw;
+    height: 600px;
+}
+
+.carousel-buttons {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none; /* so clicks pass through the empty space between buttons */
+}
+
+.carousel-buttons form {
+    pointer-events: auto;
+}
+
+.carousel-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.carousel-buttons button:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-buttons img {
+    display: block;
+    width: 40px;
+    height: 40px;
+}

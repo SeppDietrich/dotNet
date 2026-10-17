@@ -1,0 +1,22 @@
+.site-footer {
+    background-color: #bfbfe8;
+    color: #2c2a2a;
+    text-align: center;
+    padding: 14px 10px;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.site-footer span {
+    display: inline-block;
+}
+
+.site-footer .separator {
+    margin: 0 8px;
+    color: #666;
+}

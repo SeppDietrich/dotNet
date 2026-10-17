@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Abonamente";
+}
+
+<div class="container">
+    <h1>Abonamente</h1>
+    <p class="subtitle">Prețurile sunt exprimate în lei (MDL). Abonamentele sunt valabile pe toate mijloacele de transport din regiune.</p>
+
+    <div class="table-wrap">
+        <table class="tabel-tarife">
+            <tr>
+                <th>Categorie</th>
+                @foreach (var perioada in AbonamenteData.Perioade.Values)
+                {
+                    <th class="pret">@perioada</th>
+                }
+            </tr>
+            @foreach (var categorie in AbonamenteData.Categorii)
+            {
+                if (categorie.EsteGratuit)
+                {
+                    <tr class="gratuit">
+                        <td>@categorie.Nume</td>
+                        <td class="pret" colspan="@AbonamenteData.Perioade.Count">Gratuit</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@categorie.Nume</td>
+                        @foreach (var luni in AbonamenteData.Perioade.Keys)
+                        {
+                            <td class="pret">@(AbonamenteData.FormateazaPret(categorie.Preturi![luni])) lei</td>
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>

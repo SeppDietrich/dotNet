@@ -1,8 +1,50 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Acasă";
 }
 
-<div class="text-center">
-    <p>@ViewData["Message"]</p>
-    <p>@ViewData["MessageSecond"]</p>
+<!--Carousel-->
+@if (Model.CarouselSrc is not null)
+{
+    <partial name="_Carousel" model="Model.CarouselSrc"/>
+}
+
+<!--Content-->
+<div class="container">
+
+    <h1>@Model.DenumireProiect</h1>
+    <p class="subtitle">@Model.DescriereProiect</p>
+
+    <h2>Abonamente disponibile</h2>
+    <p>Abonamentele sunt valabile pe toate mijloacele de transport din regiune, nu sunt legate de un traseu anume.</p>
+    <div class="card-grid">
+        @foreach (var categorie in Model.Categorii)
+        {
+            <div class="card">
+                <h3>@categorie.Nume</h3>
+                <p>@categorie.Descriere</p>
+                <p class="price">
+                    @if (categorie.EsteGratuit)
+                    {
+                        <text>Gratuit</text>
+                    }
+                    else
+                    {
+                        <text>de la @(AbonamenteData.FormateazaPret(categorie.Preturi!.Values.Min())) lei</text>
+                    }
+                </p>
+            </div>
+        }
+    </div>
+    <p><a asp-controller="Abonamente" asp-action="Index">Vezi toate tarifele</a></p>
+
+    <h2>Cum comanzi un abonament</h2>
+    <ol class="steps">
+        <li>Consulți tipurile de abonament și tarifele, fără cont.</li>
+        <li>Îți creezi un cont sau te autentifici.</li>
+        <li>Alegi categoria, perioada și data de început, apoi confirmi comanda.</li>
+        <li>Primești abonamentul cu un cod unic, vizibil în contul tău.</li>
+        <li>Prezintă codul controlorului, care îl verifică în aplicație.</li>
+    </ol>
+
 </div>

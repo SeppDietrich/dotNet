@@ -1,0 +1,53 @@
+@model FeedbackViewModel
+@{
+    ViewData["Title"] = "Feedback";
+    var trimis = ViewBag.Trimis == true;
+}
+
+<div class="container">
+    <h1>Feedback</h1>
+    <p class="subtitle">Spune-ne ce crezi despre TransAbon și cum îl putem îmbunătăți.</p>
+
+    <div class="form-card">
+        @if (trimis)
+        {
+            <div class="msg-ok">Mulțumim! Mesajul tău a fost primit.</div>
+        }
+
+        <div asp-validation-summary="All" class="msg-err"></div>
+
+        <form asp-controller="Feedback" asp-action="Index" method="post">
+            <div class="form-group">
+                <label for="Nume">Nume</label>
+                <input asp-for="Nume" type="text">
+            </div>
+
+            <div class="form-group">
+                <label for="Email">E-mail</label>
+                <input asp-for="Email" type="email">
+            </div>
+
+            <div class="form-group">
+                <label for="Evaluare">Evaluare</label>
+                <select asp-for="Evaluare">
+                    <option value="">Alege...</option>
+                    @for (var i = 5; i >= 1; i--)
+                    {
+                        <option value="@i" selected="@(Model.Evaluare == i)">@i</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Mesaj">Mesaj</label>
+                <textarea asp-for="Mesaj" rows="5"></textarea>
+            </div>
+
+            <button type="submit">Trimite</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "Despre";
+}
+
+<div class="container">
+    <h1>Despre TransAbon</h1>
+    <p class="subtitle">Sistemul de gestionare a abonamentelor de transport</p>
+
+    <h2>Problema pe care o rezolvăm</h2>
+    <p>
+        Până acum, abonamentele se vindeau doar la ghișeul autogării, contra numerar, iar evidența lor
+        se ținea manual, într-un registru și într-un fișier de calcul. Clientul trebuia să se deplaseze
+        la autogară, iar controlul la bord se făcea vizual, pe baza abonamentului tipărit.
+    </p>
+
+    <h2>Ce face aplicația</h2>
+    <p>
+        TransAbon mută acest proces online. Clientul își comandă abonamentul de pe calculator sau telefon,
+        primește un cod unic, iar controlorul verifică în câteva secunde dacă abonamentul este valid.
+        Abonamentul nu este legat de un traseu, ci de o perioadă de valabilitate, deci este acceptat pe
+        toate mijloacele de transport din regiune.
+    </p>
+
+    <h2>Rolurile din aplicație</h2>
+    <div class="card-grid">
+        <div class="card">
+            <h3>Client</h3>
+            <p>Comandă abonamente, își urmărește valabilitatea și primește notificări înainte de expirare.</p>
+        </div>
+        <div class="card">
+            <h3>Controlor</h3>
+            <p>Introduce codul abonamentului și vede dacă este valid, expirat, anulat sau inexistent.</p>
+        </div>
+        <div class="card">
+            <h3>Administrator</h3>
+            <p>Gestionează tipurile de abonament, tarifele, conturile și rapoartele.</p>
+        </div>
+    </div>
+
+    <h2>Ce nu include această etapă</h2>
+    <ul>
+        <li>plata online cu cardul (decontarea se face în afara aplicației);</li>
+        <li>aplicația mobilă separată;</li>
+        <li>validarea prin scanarea unui cod QR (codul se introduce manual).</li>
+    </ul>
+
+    <h2>Beneficiar</h2>
+    <p>Iurcu Nicolae, întreprinzător individual, operator de transport interurban.</p>
+</div>

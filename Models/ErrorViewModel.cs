@@ -1,4 +1,4 @@
-namespace WebApplication5.Models;
+namespace TransAbon.Models;
 
 public class ErrorViewModel
 {

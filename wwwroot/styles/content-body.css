@@ -1,0 +1,23 @@
+.container{
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 15px;
+}
+
+.container h1,
+.container h2{
+    margin-top: 24px;
+}
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td{
+    border: 1px solid #cfcfdf;
+    padding: 8px 10px;
+    text-align: left;
+}
+th{
+    background-color: #e6e6f5;
+}

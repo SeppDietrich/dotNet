@@ -1,0 +1,130 @@
+/* Stiluri comune pentru paginile noi - simple, culori discrete */
+
+.subtitle{
+    color: #666;
+    margin-top: 0;
+}
+
+/* Carduri */
+.card-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+.card{
+    background-color: #f6f6fb;
+    border: 1px solid #cfcfdf;
+    border-radius: 6px;
+    padding: 15px;
+}
+.card h3{
+    margin-top: 0;
+}
+.card .price{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Tabel tarife */
+.tabel-tarife td.pret,
+.tabel-tarife th.pret{
+    text-align: center;
+}
+.tabel-tarife tr.gratuit td{
+    background-color: #f6f6fb;
+}
+.table-wrap{
+    overflow-x: auto;
+}
+
+/* Liste */
+.steps{
+    padding-left: 20px;
+}
+.steps li{
+    margin-bottom: 6px;
+}
+
+/* Formulare (Feedback, Login) */
+.form-card,
+.login-container{
+    max-width: 420px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f6f6fb;
+    border: 1px solid #cfcfdf;
+    border-radius: 6px;
+}
+.form-card h2,
+.login-container h2{
+    margin-top: 0;
+}
+.form-group{
+    margin-bottom: 14px;
+}
+.form-group label{
+    display: block;
+    margin-bottom: 4px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #b5b5c8;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+}
+.form-card button,
+.login-container button{
+    background-color: #bfbfe8;
+    color: #2c2a2a;
+    border: 1px solid #a3a3d0;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.form-card button:hover,
+.login-container button:hover{
+    background-color: #a9a9dc;
+}
+.msg-ok,
+.msg-err{
+    padding: 10px 12px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+}
+.msg-ok{
+    background-color: #e4f3e4;
+    border: 1px solid #a8d3a8;
+}
+.msg-err{
+    background-color: #f8e5e5;
+    border: 1px solid #dba9a9;
+}
+.msg-err ul{
+    margin: 0;
+    padding-left: 18px;
+}
+/* Rezumatul de validare (ASP.NET) este ascuns când nu există erori */
+.validation-summary-valid{
+    display: none;
+}
+
+/* Contact */
+.contact-list{
+    list-style: none;
+    padding: 0;
+}
+.contact-list li{
+    margin-bottom: 8px;
+}
+.map-frame{
+    width: 100%;
+    height: 350px;
+    border: 1px solid #cfcfdf;
+    border-radius: 6px;
+}

@@ -1,0 +1,29 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Autentificare";
+}
+
+<!--LOGIN CONTENT-->
+<div class="login-container">
+    <h2>Autentificare</h2>
+
+    <div asp-validation-summary="All" class="msg-err"></div>
+
+    <form asp-controller="Account" asp-action="Login" method="post">
+        <div class="form-group">
+            <label for="Email">E-mail</label>
+            <input asp-for="Email" type="email">
+        </div>
+
+        <div class="form-group">
+            <label for="Password">Parolă</label>
+            <input asp-for="Password" type="password">
+        </div>
+
+        <button type="submit">Autentificare</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
