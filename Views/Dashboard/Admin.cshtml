@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Administrare";
+}
+
+<div class="container">
+    <h1>Administrare</h1>
+    <p class="subtitle">Machetă: datele sunt fictive, iar butoanele nu sunt încă funcționale.</p>
+
+    <div class="kpi-grid">
+        <div class="kpi"><span class="kpi-value">1 284</span><span class="kpi-label">Abonamente active</span></div>
+        <div class="kpi"><span class="kpi-value">96</span><span class="kpi-label">Comenzi în ultima săptămână</span></div>
+        <div class="kpi"><span class="kpi-value">312</span><span class="kpi-label">Validări azi</span></div>
+        <div class="kpi"><span class="kpi-value">9 417</span><span class="kpi-label">Conturi</span></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Tipuri de abonament și tarife</h2>
+            <button type="button" class="btn" disabled>Adaugă tip de abonament</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Categorie</th>
+                    @foreach (var p in AbonamenteData.Perioade.Values)
+                    {
+                        <th class="pret">@p</th>
+                    }
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var c in AbonamenteData.Categorii)
+                {
+                    <tr>
+                        <td>@c.Nume</td>
+                        @if (c.EsteGratuit)
+                        {
+                            <td class="pret" colspan="@AbonamenteData.Perioade.Count">Gratuit</td>
+                        }
+                        else
+                        {
+                            @foreach (var luni in AbonamenteData.Perioade.Keys)
+                            {
+                                <td class="pret">@(AbonamenteData.FormateazaPret(c.Preturi![luni])) lei</td>
+                            }
+                        }
+                        <td class="actions">
+                            <button type="button" class="btn btn-sm" disabled>Modifică</button>
+                            <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Conturi și roluri</h2>
+            <button type="button" class="btn" disabled>Creează cont controlor</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>E-mail</th><th>Nume</th><th>Rol</th><th>Stare</th><th></th></tr></thead>
+                <tbody>
+                <tr><td>admin@transabon.md</td><td>Admin Demo</td><td>Administrator</td><td><span class="badge badge-activ">activ</span></td><td class="actions"><button type="button" class="btn btn-sm" disabled>Schimbă rol</button> <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button></td></tr>
+                <tr><td>controlor@transabon.md</td><td>Controlor Demo</td><td>Controlor</td><td><span class="badge badge-activ">activ</span></td><td class="actions"><button type="button" class="btn btn-sm" disabled>Schimbă rol</button> <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button></td></tr>
+                <tr><td>client@exemplu.md</td><td>Ion Popescu</td><td>Client</td><td><span class="badge badge-activ">activ</span></td><td class="actions"><button type="button" class="btn btn-sm" disabled>Schimbă rol</button> <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Jurnal de evenimente</h2>
+        <div class="filters">
+            <input type="text" placeholder="Utilizator" aria-label="Filtru utilizator">
+            <select aria-label="Filtru acțiune"><option>Toate acțiunile</option><option>Autentificare</option><option>Comandă</option><option>Validare</option></select>
+            <input type="date" aria-label="De la data">
+            <input type="date" aria-label="Până la data">
+            <button type="button" class="btn" disabled>Filtrează</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Data și ora</th><th>Utilizator</th><th>Acțiune</th><th>Obiect</th></tr></thead>
+                <tbody>
+                <tr><td>09:12:04</td><td>admin@transabon.md</td><td>Modificare tarif</td><td>General – 1 lună</td></tr>
+                <tr><td>09:05:41</td><td>controlor@transabon.md</td><td>Validare</td><td>TA-DEMO-0001</td></tr>
+                <tr><td>08:57:19</td><td>client@exemplu.md</td><td>Comandă</td><td>Elev – 3 luni</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Rapoarte</h2>
+            <span>
+                <button type="button" class="btn" disabled>Generează raport</button>
+                <button type="button" class="btn" disabled>Exportă CSV</button>
+            </span>
+        </div>
+        <h3>Abonamente emise pe categorie</h3>
+        <div class="bar-row"><span>General</span><div class="bar-track"><div class="bar" style="width:82%"></div></div><span>412</span></div>
+        <div class="bar-row"><span>Elev</span><div class="bar-track"><div class="bar" style="width:46%"></div></div><span>231</span></div>
+        <div class="bar-row"><span>Student / angajat</span><div class="bar-track"><div class="bar" style="width:34%"></div></div><span>170</span></div>
+        <div class="bar-row"><span>Elevi clasele I–IV</span><div class="bar-track"><div class="bar" style="width:20%"></div></div><span>98</span></div>
+    </div>
+</div>

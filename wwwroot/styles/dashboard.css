@@ -1,0 +1,61 @@
+/* Navbar utilizator, formulare și machete de pagini pe rol. Paleta existentă. */
+
+.nav-user { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.nav-user form { margin: 0; }
+.nav-user button {
+    background-color: #bfbfe8; border: 1px solid #a3a3d0; border-radius: 4px;
+    padding: 5px 12px; font-size: 13px; cursor: pointer; color: #2c2a2a;
+}
+.role-badge {
+    background-color: #e6e6f5; border: 1px solid #cfcfdf; border-radius: 10px;
+    padding: 1px 8px; font-size: 12px;
+}
+.form-link { margin-top: 14px; font-size: 14px; }
+
+/* Indicatori */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+.kpi { background-color: #f6f6fb; border: 1px solid #cfcfdf; border-radius: 6px; padding: 14px; }
+.kpi .kpi-value { font-size: 28px; font-weight: bold; display: block; }
+.kpi .kpi-label { color: #666; font-size: 13px; }
+
+/* Secțiuni și butoane */
+.panel { margin-top: 28px; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.panel-head h2 { margin: 0; }
+.btn {
+    background-color: #bfbfe8; color: #2c2a2a; border: 1px solid #a3a3d0; border-radius: 4px;
+    padding: 7px 16px; font-size: 14px; cursor: pointer; font-family: inherit;
+}
+.btn:hover:not(:disabled) { background-color: #a9a9dc; }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-sm { padding: 3px 10px; font-size: 13px; }
+.btn-danger { background-color: #f1c9c9; border-color: #dba9a9; }
+.actions { white-space: nowrap; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+.filters input, .filters select { padding: 6px 8px; border: 1px solid #b5b5c8; border-radius: 4px; font-family: inherit; }
+
+/* Stări */
+.badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; border: 1px solid; }
+.badge-activ, .badge-valid { background: #e4f3e4; border-color: #a8d3a8; }
+.badge-expirat, .badge-anulat, .badge-inexistent { background: #f8e5e5; border-color: #dba9a9; }
+.badge-programat { background: #e6e6f5; border-color: #a3a3d0; }
+
+.notice { background-color: #fff3cd; border: 1px solid #e0c97a; border-radius: 4px; padding: 10px 12px; margin-bottom: 10px; }
+.notice .btn { margin-left: 8px; }
+.muted { color: #666; font-size: 14px; }
+.inline-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.inline-form .form-group { margin-bottom: 0; }
+.inline-form input, .inline-form select { padding: 8px; border: 1px solid #b5b5c8; border-radius: 4px; font-family: inherit; font-size: 14px; }
+
+/* Validare */
+.check-box { max-width: 520px; background-color: #f6f6fb; border: 1px solid #cfcfdf; border-radius: 6px; padding: 20px; }
+.check-box input { width: 100%; box-sizing: border-box; padding: 10px; font-size: 18px; letter-spacing: 1px; border: 1px solid #b5b5c8; border-radius: 4px; margin-bottom: 12px; }
+.result { margin-top: 14px; padding: 14px; border-radius: 6px; font-size: 16px; }
+.result strong { display: block; font-size: 22px; margin-bottom: 4px; }
+.result.ok { background: #e4f3e4; border: 1px solid #a8d3a8; }
+.result.bad { background: #f8e5e5; border: 1px solid #dba9a9; }
+
+/* Grafic fictiv */
+.bar-row { display: grid; grid-template-columns: 170px 1fr 50px; gap: 10px; align-items: center; margin: 6px 0; font-size: 14px; }
+.bar-track { background: #e6e6f5; border-radius: 4px; height: 16px; }
+.bar { background: #8f8fd6; height: 100%; border-radius: 4px; }

@@ -26,8 +26,28 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWJvbmFtZW50ZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Account/Denied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9EZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9SZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Dashboard/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0FkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Dashboard/Client.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0NsaWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Dashboard/Controlor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGFzaGJvYXJkL0NvbnRyb2xvci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/niggu/RiderProjects/WebApplication5/WebApplication5/Views/Feedback/Index.cshtml]

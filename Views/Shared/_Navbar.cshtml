@@ -1,3 +1,10 @@
+@{
+    var autentificat = User.Identity?.IsAuthenticated == true;
+    var esteAdmin = User.IsInRole(AppRoles.Administrator);
+    var esteControlor = User.IsInRole(AppRoles.Controlor);
+    var esteClient = User.IsInRole(AppRoles.Client);
+    var rol = esteAdmin ? AppRoles.Administrator : esteControlor ? AppRoles.Controlor : esteClient ? AppRoles.Client : "";
+}
 <header class="site-header">
     <div class="list-header">
         <div class="dropdown-button nav-item">
@@ -10,15 +17,40 @@
                 <a asp-controller="Abonamente" asp-action="Index">Abonamente</a>
                 <a asp-controller="Feedback" asp-action="Index">Feedback</a>
                 <a asp-controller="Home" asp-action="Contact">Contact</a>
+                @if (esteAdmin)
+                {
+                    <a asp-controller="Dashboard" asp-action="Admin">Administrare</a>
+                }
+                else if (esteControlor)
+                {
+                    <a asp-controller="Dashboard" asp-action="Controlor">Validare</a>
+                }
+                else if (esteClient)
+                {
+                    <a asp-controller="Dashboard" asp-action="Client">Contul meu</a>
+                }
             </div>
         </div>
 
         <a class="brand" asp-controller="Home" asp-action="Index">TransAbon</a>
 
         <div class="login-button nav-item">
-            <a class="icon-btn" asp-controller="Account" asp-action="Login">
-                <img src="~/images/loggin.png" alt="Autentificare">
-            </a>
+            @if (autentificat)
+            {
+                <div class="nav-user">
+                    <span>@User.FindFirst("nume_complet")?.Value</span>
+                    <span class="role-badge">@rol</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit">Deconectare</button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <a class="icon-btn" asp-controller="Account" asp-action="Login">
+                    <img src="~/images/loggin.png" alt="Autentificare">
+                </a>
+            }
         </div>
     </div>
 </header>
