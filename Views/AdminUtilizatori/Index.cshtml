@@ -1,0 +1,153 @@
+@using System.Security.Claims
+@model AdminUtilizatoriViewModel
+@{
+    ViewData["Title"] = "Conturi și roluri";
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var adminiActiviCount = Model.Utilizatori.Count(u => u.Rol == AppRoles.Administrator && u.Activ);
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Conturi și roluri</h1>
+            <p class="subtitle">Gestionarea conturilor de utilizatori și crearea conturilor pentru controlori.</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn">Înapoi la panou</a>
+    </div>
+
+    @if (TempData["MsgOk"] is string msgOk)
+    {
+        <div class="msg-ok" role="status">@msgOk</div>
+    }
+    @if (TempData["MsgErr"] is string msgErr)
+    {
+        <div class="msg-err" role="alert">@msgErr</div>
+    }
+
+    <div class="panel">
+        <h2>Creează cont controlor</h2>
+        <form asp-controller="AdminUtilizatori" asp-action="CreeazaControlor" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="cautare" value="@Model.Cautare" />
+            <div asp-validation-summary="All" class="msg-err"></div>
+
+            <div class="inline-form">
+                <div class="form-group">
+                    <label asp-for="FormularControlor.Nume"></label>
+                    <input asp-for="FormularControlor.Nume" type="text" autocomplete="family-name" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularControlor.Prenume"></label>
+                    <input asp-for="FormularControlor.Prenume" type="text" autocomplete="given-name" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularControlor.Email"></label>
+                    <input asp-for="FormularControlor.Email" type="email" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularControlor.CodLegitimatie"></label>
+                    <input asp-for="FormularControlor.CodLegitimatie" type="text" placeholder="CTL-0002" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularControlor.Password"></label>
+                    <input asp-for="FormularControlor.Password" type="password" autocomplete="new-password" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Creează cont controlor</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Lista conturilor (@Model.Utilizatori.Count)</h2>
+            <form asp-controller="AdminUtilizatori" asp-action="Index" method="get" class="filters">
+                <label for="cautare-input" class="muted">Căutare:</label>
+                <input id="cautare-input" type="text" name="cautare" value="@Model.Cautare" placeholder="E-mail sau nume..." />
+                <button type="submit" class="btn btn-sm">Caută</button>
+                @if (!string.IsNullOrWhiteSpace(Model.Cautare))
+                {
+                    <a asp-controller="AdminUtilizatori" asp-action="Index" class="btn btn-sm">Resetează</a>
+                }
+            </form>
+        </div>
+
+        @if (Model.Utilizatori.Count == 0)
+        {
+            <p class="muted">Nu a fost găsit niciun cont pentru criteriul căutat.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>E-mail</th>
+                        <th>Nume</th>
+                        <th>Rol</th>
+                        <th>Stare</th>
+                        <th>Data înregistrării</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var u in Model.Utilizatori)
+                    {
+                        var esteContPropriu = u.Id == currentUserId;
+                        var esteUltimulAdminActiv = u.Rol == AppRoles.Administrator && u.Activ && adminiActiviCount <= 1;
+                        var blocatLaDezactivare = u.Activ && (esteContPropriu || esteUltimulAdminActiv);
+
+                        <tr>
+                            <td>@u.Email</td>
+                            <td>
+                                @u.NumeComplet
+                                @if (!string.IsNullOrWhiteSpace(u.CodLegitimatie))
+                                {
+                                    <span class="muted">(@u.CodLegitimatie)</span>
+                                }
+                            </td>
+                            <td>@u.Rol</td>
+                            <td>
+                                @if (u.Activ)
+                                {
+                                    <span class="badge badge-activ">activ</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-anulat">inactiv</span>
+                                }
+                            </td>
+                            <td>@u.DataInregistrarii.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="actions">
+                                <form asp-controller="AdminUtilizatori" asp-action="ComutaStare" method="post" style="display:inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <input type="hidden" name="cautare" value="@Model.Cautare" />
+                                    @if (u.Activ)
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger"
+                                                disabled="@blocatLaDezactivare"
+                                                title="@(esteContPropriu ? "Nu îți poți dezactiva propriul cont." : esteUltimulAdminActiv ? "Ultimul administrator activ nu poate fi dezactivat." : "Dezactivează contul")">
+                                            Dezactivează
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-sm">Reactivează</button>
+                                    }
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

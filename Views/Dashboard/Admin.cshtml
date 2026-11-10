@@ -60,18 +60,9 @@
     <div class="panel">
         <div class="panel-head">
             <h2>Conturi și roluri</h2>
-            <button type="button" class="btn" disabled>Creează cont controlor</button>
+            <a asp-controller="AdminUtilizatori" asp-action="Index" class="btn">Gestionează conturile</a>
         </div>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>E-mail</th><th>Nume</th><th>Rol</th><th>Stare</th><th></th></tr></thead>
-                <tbody>
-                <tr><td>admin@transabon.md</td><td>Admin Demo</td><td>Administrator</td><td><span class="badge badge-activ">activ</span></td><td class="actions"><button type="button" class="btn btn-sm" disabled>Schimbă rol</button> <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button></td></tr>
-                <tr><td>controlor@transabon.md</td><td>Controlor Demo</td><td>Controlor</td><td><span class="badge badge-activ">activ</span></td><td class="actions"><button type="button" class="btn btn-sm" disabled>Schimbă rol</button> <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button></td></tr>
-                <tr><td>client@exemplu.md</td><td>Ion Popescu</td><td>Client</td><td><span class="badge badge-activ">activ</span></td><td class="actions"><button type="button" class="btn btn-sm" disabled>Schimbă rol</button> <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button></td></tr>
-                </tbody>
-            </table>
-        </div>
+        <p class="muted">Creează conturi de controlor, caută utilizatori și activează sau dezactivează conturile în pagina dedicată.</p>
     </div>
 
     <div class="panel">

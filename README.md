@@ -208,6 +208,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/cont` | Contul clientului | Machetă cu date fictive |
 | `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare | Machetă cu date fictive |
+| `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
 
 Paginile marcate „machetă” sunt înlocuite de sarcinile din [docs/sarcini.md](docs/sarcini.md).
 
