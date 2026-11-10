@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TransAbon.Models;
+using TransAbon.Services;
 
 namespace TransAbon.Controllers;
 
 public class AccountController(
     SignInManager<ApplicationUser> signInManager,
     UserManager<ApplicationUser> userManager,
+    IJurnalService jurnalService,
     ILogger<AccountController> logger) : Controller
 {
     private const string GenericLoginError = "E-mail sau parolă incorectă.";
@@ -35,10 +37,12 @@ public class AccountController(
             return View(model);
         }
 
-        var user = await userManager.FindByEmailAsync(model.Email.Trim());
+        var email = model.Email.Trim();
+        var user = await userManager.FindByEmailAsync(email);
         if (user is null || !user.Activ)
         {
             logger.LogWarning("Autentificare eșuată pentru {Email}", model.Email);
+            await jurnalService.LogAsync(user?.Id, "Autentificare eșuată", email);
             ModelState.AddModelError(string.Empty, GenericLoginError);
             model.Password = "";
             return View(model);
@@ -48,6 +52,8 @@ public class AccountController(
 
         if (result.Succeeded)
         {
+            await jurnalService.LogAsync(user.Id, "Autentificare", user.Email ?? email);
+
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
                 return LocalRedirect(returnUrl);
@@ -60,11 +66,13 @@ public class AccountController(
         if (result.IsLockedOut)
         {
             logger.LogWarning("Cont blocat temporar: {Email}", model.Email);
+            await jurnalService.LogAsync(user.Id, "Autentificare eșuată", $"{user.Email ?? email} (cont blocat)");
             ModelState.AddModelError(string.Empty, "Contul este blocat temporar după prea multe încercări. Încearcă peste 15 minute.");
         }
         else
         {
             logger.LogWarning("Autentificare eșuată pentru {Email}", model.Email);
+            await jurnalService.LogAsync(user.Id, "Autentificare eșuată", user.Email ?? email);
             ModelState.AddModelError(string.Empty, GenericLoginError);
         }
 
@@ -111,6 +119,7 @@ public class AccountController(
             var role = await userManager.AddToRoleAsync(user, AppRoles.Client);
             if (role.Succeeded)
             {
+                await jurnalService.LogAsync(user.Id, "Creare cont", $"{user.Email} ({AppRoles.Client})");
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return Redirect("/cont");
             }
