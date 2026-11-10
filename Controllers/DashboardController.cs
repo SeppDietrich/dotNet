@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransAbon.Models;
+using TransAbon.Services;
 
 namespace TransAbon.Controllers;
 
@@ -16,7 +18,16 @@ public class DashboardController : Controller
 
     [Authorize(Roles = AppRoles.Controlor)]
     [HttpGet("validare")]
-    public IActionResult Controlor() => View();
+    public async Task<IActionResult> Controlor([FromServices] IValidareService validareService)
+    {
+        var controlorId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        var model = new ValidareViewModel
+        {
+            ValidariAzi = await validareService.ObtineValidariAziAsync(controlorId)
+        };
+
+        return View(model);
+    }
 
     [Authorize(Roles = AppRoles.Administrator)]
     [HttpGet("admin")]

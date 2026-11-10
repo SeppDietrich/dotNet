@@ -21,6 +21,7 @@ builder.Services.AddSession(options =>
 builder.Services.Configure<AppInfoOptions>(builder.Configuration.GetSection(AppInfoOptions.SectionName));
 builder.Services.AddScoped<ICarouselService, CarouselService>();
 builder.Services.AddScoped<IJurnalService, JurnalService>();
+builder.Services.AddScoped<IValidareService, ValidareService>();
 
 // Baza de date SQLite (fișier local). Calea relativă se rezolvă față de folderul proiectului.
 var csb = new SqliteConnectionStringBuilder(

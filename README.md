@@ -206,7 +206,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
 | `/acces-interzis` | Acces refuzat | Funcțională |
 | `/cont` | Contul clientului | Machetă cu date fictive |
-| `/validare` | Validare abonamente | Machetă cu date fictive |
+| `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare | Machetă cu date fictive |
 
 Paginile marcate „machetă” sunt înlocuite de sarcinile din [docs/sarcini.md](docs/sarcini.md).

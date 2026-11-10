@@ -1,3 +1,4 @@
+@model ValidareViewModel
 @{
     ViewData["Title"] = "Validare abonamente";
     var nume = User.FindFirst("nume_complet")?.Value;
@@ -7,34 +8,59 @@
     <h1>Validare abonamente</h1>
     <p class="subtitle">Controlor: @(nume)</p>
 
-    <div class="notice">Machetă: validarea reală se implementează în etapa următoare.</div>
-
     <div class="check-box">
-        <label for="code">Codul abonamentului</label>
-        <input id="code" type="text" autocomplete="off" placeholder="TA-XXXXXXXX">
-        <button type="button" class="btn" disabled>Verifică</button>
+        <form asp-controller="Validare" asp-action="Verifica" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="msg-err"></div>
 
-        <div class="result ok">
-            <strong>VALID</strong>
-            <span>Exemplu de rezultat: valabil 2026-09-23 – 2026-10-22</span>
-        </div>
-        <div class="result bad">
-            <strong>EXPIRAT</strong>
-            <span>Exemplu de rezultat: a expirat la 2026-08-30.</span>
-        </div>
+            <label asp-for="Cod">Codul abonamentului</label>
+            <input asp-for="Cod" type="text" autocomplete="off" placeholder="TA-XXXXXXXX" autofocus>
+            <button type="submit" class="btn">Verifică</button>
+        </form>
+
+        @if (Model.RezultatCurent is not null)
+        {
+            var r = Model.RezultatCurent;
+            <div class="result @(r.EsteValid ? "ok" : "bad")" role="status" aria-live="polite">
+                <strong>@r.TitluAfisat</strong>
+                <span>@r.Detalii</span>
+            </div>
+        }
     </div>
 
     <div class="panel">
         <h2>Validările de azi</h2>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>Ora</th><th>Cod</th><th>Rezultat</th></tr></thead>
-                <tbody>
-                <tr><td>09:05:41</td><td>TA-DEMO-0001</td><td><span class="badge badge-valid">VALID</span></td></tr>
-                <tr><td>09:02:10</td><td>TA-DEMO-0002</td><td><span class="badge badge-expirat">EXPIRAT</span></td></tr>
-                <tr><td>08:58:33</td><td>TA-ZZZZZZZZ</td><td><span class="badge badge-inexistent">COD INEXISTENT</span></td></tr>
-                </tbody>
-            </table>
-        </div>
+        @if (Model.ValidariAzi.Count == 0)
+        {
+            <p class="muted">Nu există validări efectuate astăzi.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ora</th>
+                        <th>Cod</th>
+                        <th>Rezultat</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.ValidariAzi)
+                    {
+                        <tr>
+                            <td>@item.DataOra.ToLocalTime().ToString("HH:mm:ss")</td>
+                            <td>@item.CodIntrodus</td>
+                            <td><span class="badge @item.ClasaBadge">@item.EtichetaRezultat</span></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
