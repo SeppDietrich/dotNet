@@ -12,8 +12,9 @@ public record CategorieAbonament(
 }
 
 /// <summary>
-/// Echivalentul data/abonamente.php: tarifele (MDL) sunt într-un singur loc.
-/// Cheia perioadei este numărul de luni.
+/// Tarifele (MDL) într-un singur loc. Cheia perioadei este numărul de luni.
+/// Servește paginile publice și încarcă tabelele Categorii/TipuriAbonament la prima pornire (DbSeeder).
+/// TODO (sarcina 4): paginile trec pe baza de date, iar această clasă se elimină.
 /// </summary>
 public static class AbonamenteData
 {
@@ -41,6 +42,6 @@ public static class AbonamenteData
         NumberDecimalDigits = 0
     };
 
-    /// <summary>Echivalentul number_format($x, 0, ',', '.') din PHP: 1134 → "1.134".</summary>
+    /// <summary>Formatează prețul cu punct ca separator de mii: 1134 → "1.134".</summary>
     public static string FormateazaPret(int pret) => pret.ToString("N0", PretFormat);
 }

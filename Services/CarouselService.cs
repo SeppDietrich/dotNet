@@ -15,7 +15,7 @@ public class CarouselService : ICarouselService
         var dir = Path.Combine(_env.WebRootPath ?? "", FolderName);
         if (!Directory.Exists(dir)) return null;
 
-        // Ordine alfabetică, ca scandir() din PHP
+        // Ordine alfabetică, ca să fie la fel pe orice sistem de operare
         var images = Directory.EnumerateFiles(dir)
             .Select(f => Path.GetFileName(f))
             .Where(f => AllowedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()))

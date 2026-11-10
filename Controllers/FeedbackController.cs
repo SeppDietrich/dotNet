@@ -17,8 +17,8 @@ public class FeedbackController : Controller
             return View(model);
         }
 
-        // Ca în PHP: deocamdată mesajul nu se salvează; doar se afișează confirmarea
-        // și formularul se golește.
+        // TODO (sarcina 1): salvează mesajul în baza de date (entitatea Feedback).
+        // Deocamdată se afișează doar confirmarea și formularul se golește.
         ModelState.Clear();
         ViewBag.Trimis = true;
         return View(new FeedbackViewModel());

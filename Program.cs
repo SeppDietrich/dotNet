@@ -67,10 +67,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Creează baza de date (dacă nu există) și conturile inițiale
+// Aplică migrările EF Core (creează baza dacă nu există) și încarcă datele inițiale.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.EnsureCreated();
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
     await DbSeeder.SeedAsync(scope.ServiceProvider, app.Configuration);
 }
 

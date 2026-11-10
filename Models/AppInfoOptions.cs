@@ -1,6 +1,6 @@
 namespace TransAbon.Models;
 
-/// <summary>Echivalentul constantelor din config.php (AUTOR, VERSIUNE_APLICATIE, GRUPA).</summary>
+/// <summary>Informațiile afișate în footer (secțiunea „AppInfo” din appsettings.json).</summary>
 public class AppInfoOptions
 {
     public const string SectionName = "AppInfo";

@@ -1,0 +1,11 @@
+1. Copiaza continutul acestui folder peste radacina proiectului .NET (acolo unde este WebApplication5.csproj), acceptand inlocuirea fisierelor existente.
+2. Sterge: Views/Home/Privacy.cshtml si Views/Shared/_Layout.cshtml.css (se elimina in Sarcina 7; poti sa le lasi pana atunci).
+3. Sterge baza veche: App_Data/transabon.db (si fisierele -shm / -wal, daca exista).
+4. In radacina proiectului ruleaza:
+     dotnet tool restore
+     dotnet restore
+     dotnet ef migrations add InitialCreate
+     dotnet ef database update
+     dotnet run --launch-profile https
+5. Verifica: login cu admin@transabon.md / Demo123!, apoi comite totul, inclusiv folderul Migrations/.
+6. Verifica git status: App_Data/*.db nu trebuie sa apara.

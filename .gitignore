@@ -1,1 +1,25 @@
-App_Data/
+# Baza de date locală (fiecare dezvoltator o are pe a lui; se recreează din migrări + seed)
+App_Data/*.db
+App_Data/*.db-shm
+App_Data/*.db-wal
+
+# Build
+bin/
+obj/
+publish/
+
+# IDE
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.DotSettings.user
+
+# Secrete locale
+secrets.json
+*.pfx
+
+# Sistem
+.DS_Store
+Thumbs.db
