@@ -207,8 +207,10 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/acces-interzis` | Acces refuzat | Funcțională |
 | `/cont` | Contul clientului | Machetă cu date fictive |
 | `/validare` | Validare abonamente | Funcțională |
-| `/admin` | Administrare | Machetă cu date fictive |
+| `/admin` | Administrare (indicatori reali) | Funcțională |
 | `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
+| `/admin/jurnal` | Jurnal de evenimente (audit) | Funcțională |
+| `/admin/rapoarte` | Rapoarte și export CSV | Funcțională |
 
 Paginile marcate „machetă” sunt înlocuite de sarcinile din [docs/sarcini.md](docs/sarcini.md).
 

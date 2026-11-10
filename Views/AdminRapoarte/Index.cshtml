@@ -1,0 +1,163 @@
+@model AdminRapoarteViewModel
+@{
+    ViewData["Title"] = "Rapoarte";
+    var deLaStr = Model.DeLa.ToString("yyyy-MM-dd");
+    var panaLaStr = Model.PanaLa.ToString("yyyy-MM-dd");
+    var maxAbonamenteCategorie = Model.AbonamentePeCategorie.Count > 0
+        ? Math.Max(1, Model.AbonamentePeCategorie.Max(x => x.NumarAbonamente))
+        : 1;
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Rapoarte pe perioadă</h1>
+            <p class="subtitle">Perioada selectată: @deLaStr – @panaLaStr</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn">Înapoi la panou</a>
+    </div>
+
+    <div class="panel">
+        <form asp-controller="AdminRapoarte" asp-action="Index" method="get" class="inline-form">
+            <div class="form-group">
+                <label for="raport-dela">De la data</label>
+                <input id="raport-dela" type="date" name="deLa" value="@deLaStr" />
+            </div>
+            <div class="form-group">
+                <label for="raport-panala">Până la data</label>
+                <input id="raport-panala" type="date" name="panaLa" value="@panaLaStr" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">Generează raport</button>
+                @if (Model.GeneratExplici)
+                {
+                    <a asp-controller="AdminRapoarte" asp-action="Index" class="btn">Ultimele 30 de zile</a>
+                }
+            </div>
+        </form>
+    </div>
+
+    @if (Model.GeneratExplici)
+    {
+        <div class="msg-ok" role="status" style="margin-top: 14px;">
+            Raport generat pentru perioada <strong>@deLaStr – @panaLaStr</strong> (@Model.TotalAbonamenteEmise abonamente emise, @Model.TotalValidari validări).
+        </div>
+    }
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>(a) Abonamente emise pe categorie și durată</h2>
+            <a asp-controller="AdminRapoarte"
+               asp-action="ExportAbonamenteCsv"
+               asp-route-deLa="@deLaStr"
+               asp-route-panaLa="@panaLaStr"
+               class="btn btn-sm">Exportă CSV (Abonamente)</a>
+        </div>
+
+        @if (Model.AbonamentePeCategorie.Count == 0)
+        {
+            <p class="muted">Nu au fost emise abonamente în perioada selectată.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Categorie</th>
+                        <th>Durată</th>
+                        <th>Preț unitar</th>
+                        <th>Abonamente emise</th>
+                        <th>Valoare totală</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var r in Model.AbonamentePeCategorie)
+                    {
+                        <tr>
+                            <td>@r.Categorie</td>
+                            <td>@r.DurataLuni @(r.DurataLuni == 1 ? "lună" : "luni")</td>
+                            <td>@r.PretUnitar lei</td>
+                            <td>@r.NumarAbonamente</td>
+                            <td>@r.ValoareTotala lei</td>
+                        </tr>
+                    }
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="3">Total</th>
+                        <th>@Model.TotalAbonamenteEmise</th>
+                        <th>@Model.ValoareTotalaLei lei</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <h3>Distribuție grafică</h3>
+            @foreach (var r in Model.AbonamentePeCategorie)
+            {
+                var procent = (int)Math.Round(r.NumarAbonamente * 100.0 / maxAbonamenteCategorie);
+                <div class="bar-row">
+                    <span>@r.Categorie (@r.DurataLuni l.)</span>
+                    <div class="bar-track"><div class="bar" style="width:@(procent)%"></div></div>
+                    <span>@r.NumarAbonamente</span>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>(b) Validări în perioada selectată</h2>
+            <a asp-controller="AdminRapoarte"
+               asp-action="ExportValidariCsv"
+               asp-route-deLa="@deLaStr"
+               asp-route-panaLa="@panaLaStr"
+               class="btn btn-sm">Exportă CSV (Validări)</a>
+        </div>
+
+        <div class="kpi-grid" style="margin-top: 12px;">
+            <div class="kpi">
+                <span class="kpi-value">@Model.TotalValidari</span>
+                <span class="kpi-label">Total validări</span>
+            </div>
+            <div class="kpi">
+                <span class="kpi-value">@Model.ValidariValide</span>
+                <span class="kpi-label">Validări valide</span>
+            </div>
+            <div class="kpi">
+                <span class="kpi-value">@Model.ValidariInvalide</span>
+                <span class="kpi-label">Validări invalide</span>
+            </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top: 14px;">
+            <table>
+                <thead>
+                <tr>
+                    <th>Rezultat verificare</th>
+                    <th>Număr</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><span class="badge badge-valid">VALID</span></td>
+                    <td>@Model.ValidariValide</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-expirat">EXPIRAT / ÎN AFARA PERIOADEI</span></td>
+                    <td>@Model.ValidariExpirate</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-anulat">ANULAT</span></td>
+                    <td>@Model.ValidariAnulate</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-inexistent">COD INEXISTENT</span></td>
+                    <td>@Model.ValidariCodInexistent</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
