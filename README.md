@@ -13,8 +13,9 @@ Proiect realizat în baza caietului de sarcini (versiunea 1.0, Colegiul Universi
 5. [Baza de date](#5-baza-de-date)
 6. [Configurare](#6-configurare)
 7. [Starea funcționalităților](#7-starea-funcționalităților)
-8. [Lucrul în echipă](#8-lucrul-în-echipă)
-9. [Probleme frecvente](#9-probleme-frecvente)
+8. [Funcționalități principale implementate](#8-funcționalități-principale-implementate)
+9. [Lucrul în echipă](#9-lucrul-în-echipă)
+10. [Probleme frecvente](#10-probleme-frecvente)
 
 ---
 
@@ -106,12 +107,12 @@ Conturile sunt definite în `appsettings.Development.json`. Același seed încar
 ## 4. Structura proiectului
 
 ```
-Controllers/     Controllere MVC (Home, Account, Dashboard, Abonamente, Feedback)
+Controllers/     Controllere MVC (Home, Account, Dashboard, Abonamente, Feedback, Validare, AdminUtilizatori, AdminJurnal, AdminRapoarte)
 Data/            AppDbContext, DbSeeder
 Migrations/      Migrările EF Core (generate, se comit în Git)
 Models/          Entități, enum-uri, ViewModel-uri, opțiuni de configurare
-Services/        Logica reutilizabilă (carusel, claims pentru Identity)
-Views/           Pagini Razor, organizate pe controller; Shared/ pentru layout și componente
+Services/        Logica reutilizabilă (carusel, claims pentru Identity, JurnalService, ValidareService)
+Views/           Pagini Razor organizate pe controller; Shared/ pentru layout și componente
 wwwroot/         Fișiere statice: styles/, images/, carousel-images/, lib/
 App_Data/        Baza de date SQLite locală (ignorată de Git)
 docs/            Documentația echipei (lista sarcinilor)
@@ -214,13 +215,79 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 
 Paginile marcate „machetă” sunt înlocuite de sarcinile din [docs/sarcini.md](docs/sarcini.md).
 
-## 8. Lucrul în echipă
+## 8. Funcționalități principale implementate
+
+### 8.1. Validarea abonamentelor de către controlor (`/validare`)
+
+Modulul este accesibil utilizatorilor cu rolul `Controlor` și permite verificarea operativă a abonamentelor fără a solicita informații despre traseu.
+
+* **Flux de verificare:**
+  1. Controlorul introduce codul abonamentului (`TA-XXXXXXXX`).
+  2. Sistemul normalizează codul (elimină spațiile marginale și ignoră diferențele între majuscule și minuscule).
+  3. Starea de valabilitate se deduce dinamic în funcție de data curentă (`DateTime.UtcNow`):
+     * **VALID**: Abonamentul este în stare `Activ`, iar data curentă se află în intervalul `[DataInceput, DataExpirare]`. Se afișează categoria și durata.
+     * **EXPIRAT**: Starea este `Expirat` sau data curentă depășește `DataExpirare`.
+     * **PROGRAMAT (NEÎNCEPUT)**: Abonamentul este în stare `Activ`, dar data de început este în viitor (`DataInceput > azi`).
+     * **ANULAT**: Abonamentul a fost anulat (`Stare == Anulat`).
+     * **COD INEXISTENT**: Codul nu a fost găsit în baza de date.
+* **Audit și istoric:**
+  * Fiecare verificare generează o înregistrare în tabela `Controale` (inclusiv pentru coduri inexistente).
+  * Verificarea este logată în jurnalul de audit prin `IJurnalService`.
+  * Pagina afișează istoricul validărilor efectuate de controlorul conectat în ziua curentă, ordonate descrescător după oră. Datele cu caracter personal ale clientului (nume, e-mail) nu sunt dezvăluite controlorului.
+
+### 8.2. Administrarea conturilor și crearea controlorilor (`/admin/utilizatori`)
+
+Modulul este accesibil doar rolului `Administrator` și oferă control complet asupra utilizatorilor sistemului:
+
+* **Căutare și listare:** Filtrare în timp real după e-mail, nume sau prenume, cu afișarea rolului Identity, stării contului și datei de înregistrare.
+* **Creare conturi de controlor:** Formular dedicat pentru crearea conturilor de personal de control (nume, prenume, e-mail, parolă temporară și cod de legitimație). Rolul `Controlor` se atribuie strict pe server, prevenind escaladarea neautorizată a privilegiilor.
+* **Activare și dezactivare conturi:**
+  * Administratorul poate comuta starea `Activ` a oricărui cont.
+  * La dezactivare se reînnoiește ștampila de securitate (`UpdateSecurityStampAsync`), ceea ce invalidează imediat cookie-urile de sesiune existente ale contului respectiv.
+  * **Mecanisme de protecție:** Este interzisă dezactivarea propriului cont de către administratorul conectat, precum și dezactivarea ultimului administrator activ din sistem.
+  * Conturile nu sunt șterse fizic din baza de date pentru a păstra integritatea referențială și istoricul operațiunilor.
+
+### 8.3. Jurnalul de evenimente și audit (`/admin/jurnal`)
+
+Auditarea centralizată a acțiunilor critice este asigurată de `IJurnalService` și implementarea `JurnalService`:
+
+* **Metodă unificată:** `LogAsync(utilizatorId, actiune, obiect)` permite înregistrarea facilă a oricărui eveniment (atât pentru utilizatori autentificați, cât și pentru acțiuni anonime sau de sistem).
+* **Evenimente auditate automat:**
+  * Autentificare reușită și autentificare eșuată (inclusiv blocarea automată a contului după 5 încercări greșite).
+  * Înregistrare cont client și creare cont controlor.
+  * Activare și dezactivare conturi.
+  * Verificări efectuate de controlori.
+* **Consultare și filtrare (`/admin/jurnal`):**
+  * Paginare pe server (câte 20 de înregistrări per pagină).
+  * Filtre combinate după utilizator (e-mail sau nume), tipul acțiunii și interval calendaristic (`de la` / `până la`).
+
+### 8.4. Rapoarte agregate și export CSV (`/admin/rapoarte`)
+
+Modulul oferă administratorilor statistici agregate direct din baza de date, fără încărcarea inutilă a volumelor mari de date în memoria aplicației:
+
+* **Raport abonamente emise:** Grupare după categorie, durată (1, 3 sau 6 luni) și preț unitar, calculând numărul de abonamente emise și valoarea totală în lei pentru intervalul calendaristic selectat.
+* **Raport activitate validare:** Totalul verificărilor dintr-o perioadă, împărțit pe categorii de rezultat: valide vs. invalide (expirate, anulate, cod inexistent).
+* **Export CSV conform standardelor:**
+  * Butoane dedicate pentru exportul fiecărui raport în format `.csv`.
+  * Fișierele sunt generate cu antet UTF-8 BOM (`\xef\xbb\xbf`), garantând afișarea corectă a diacriticelor românești în Microsoft Excel și alte programe tabelare.
+  * Câmpurile text sunt formatate cu escaping conform RFC 4180.
+
+### 8.5. Indicatori cheie de performanță (KPI) în tabloul de bord (`/admin`)
+
+Pagina principală de administrare a fost transformată dintr-o machetă statică într-un tablou de bord dinamic:
+
+* **Abonamente active:** Numărul de abonamente active la data curentă (`DataInceput <= azi <= DataExpirare` și stare `Activ`).
+* **Comenzi în ultima săptămână:** Comenzi plasate în ultimele 7 zile.
+* **Validări azi:** Numărul total de verificări rulate de controlori în cursul zilei curente.
+* **Conturi:** Numărul total de conturi de utilizator înregistrate în sistem.
+
+## 9. Lucrul în echipă
 
 - Sarcinile sunt descrise în [docs/sarcini.md](docs/sarcini.md) și se creează ca issue-uri în GitHub, folosind șablonul din `.github/ISSUE_TEMPLATE/`.
 - Regulile de lucru (branch-uri, commit-uri, pull request-uri, migrări, convenții de cod) sunt în [CONTRIBUTING.md](CONTRIBUTING.md).
 - Referința funcțională este caietul de sarcini: orice neclaritate se verifică acolo înainte să se ia o decizie.
 
-## 9. Probleme frecvente
+## 10. Probleme frecvente
 
 **`table "AspNetRoles" already exists` sau `table ... already exists` la pornire.** Ai o bază de date veche, creată înainte de introducerea migrărilor. Șterge `App_Data/transabon.db*` și pornește din nou.
 
