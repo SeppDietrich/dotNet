@@ -1,26 +1,77 @@
+@model ClientDashboardViewModel
 @{
     ViewData["Title"] = "Contul meu";
     var nume = User.FindFirst("nume_complet")?.Value;
+    var azi = DateOnly.FromDateTime(DateTime.UtcNow);
 }
 
 <div class="container">
-    <h1>Contul meu</h1>
-    <p class="subtitle">Bun venit, @(nume).</p>
+    <div class="panel-head">
+        <div>
+            <h1>Contul meu</h1>
+            <p class="subtitle">Bun venit, @(nume).</p>
+        </div>
+    </div>
 
-    <div class="notice">Machetă: datele sunt fictive, iar comanda și anularea abonamentelor se implementează în etapa următoare.</div>
-    <div class="notice">Abonamentul TA-DEMO-0004 expiră în 2 zile. <button type="button" class="btn btn-sm" disabled>Comandă reînnoire</button></div>
+    @if (TempData["MsgOk"] is string msgOk)
+    {
+        <div class="msg-ok" role="status">@msgOk</div>
+    }
+    @if (TempData["MsgErr"] is string msgErr)
+    {
+        <div class="msg-err" role="alert">@msgErr</div>
+    }
 
     <div class="panel">
         <h2>Abonamentele mele</h2>
         <div class="table-wrap">
             <table>
                 <thead>
-                <tr><th>Cod</th><th>Categorie</th><th>Perioadă</th><th>Început</th><th>Expirare</th><th>Stare</th><th></th></tr>
+                <tr>
+                    <th scope="col">Cod</th>
+                    <th scope="col">Categorie</th>
+                    <th scope="col">Perioadă</th>
+                    <th scope="col">Început</th>
+                    <th scope="col">Expirare</th>
+                    <th scope="col">Stare</th>
+                    <th scope="col">Acțiuni</th>
+                </tr>
                 </thead>
                 <tbody>
-                <tr><td>TA-DEMO-0004</td><td>General</td><td>1 lună</td><td>2026-09-23</td><td>2026-10-22</td><td><span class="badge badge-activ">activ</span></td><td></td></tr>
-                <tr><td>TA-DEMO-0005</td><td>General</td><td>1 lună</td><td>2026-11-01</td><td>2026-11-30</td><td><span class="badge badge-programat">programat</span></td><td class="actions"><button type="button" class="btn btn-sm btn-danger" disabled>Anulează</button></td></tr>
-                <tr><td>TA-DEMO-0002</td><td>General</td><td>1 lună</td><td>2026-08-01</td><td>2026-08-30</td><td><span class="badge badge-expirat">expirat</span></td><td></td></tr>
+                @if (Model.Abonamente.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7" class="muted" style="text-align: center; padding: 20px;">
+                            Nu ai niciun abonament comandat până în prezent.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var a in Model.Abonamente)
+                    {
+                        <tr>
+                            <td><strong>@a.Cod</strong></td>
+                            <td>@a.Categorie</td>
+                            <td>@a.DurataText</td>
+                            <td>@a.DataInceput.ToString("yyyy-MM-dd")</td>
+                            <td>@a.DataExpirare.ToString("yyyy-MM-dd")</td>
+                            <td><span class="badge @a.BadgeClass">@a.StareText</span></td>
+                            <td class="actions">
+                                @if (a.PoateFiAnulat)
+                                {
+                                    <form asp-controller="Comenzi" asp-action="Anuleaza" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@a.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Sigur dorești să anulezi abonamentul @a.Cod?');">
+                                            Anulează
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
                 </tbody>
             </table>
         </div>
@@ -28,31 +79,98 @@
 
     <div class="panel">
         <h2>Comandă abonament</h2>
-        <div class="inline-form">
-            <div class="form-group">
-                <label for="cat">Categorie</label>
-                <select id="cat">
-                    @foreach (var c in AbonamenteData.Categorii)
-                    {
-                        <option>@c.Nume</option>
-                    }
-                </select>
+        <form asp-controller="Comenzi" asp-action="PlaseazaComanda" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="FormularComanda.TipAbonamentId" id="input-tip-id" />
+
+            <div class="inline-form">
+                <div class="form-group">
+                    <label for="select-cat">Categorie</label>
+                    <select id="select-cat" asp-for="FormularComanda.CategorieId">
+                        @foreach (var c in Model.CategoriiDisponibile)
+                        {
+                            <option value="@c.Id">@c.Nume</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="select-durata">Perioadă</label>
+                    <select id="select-durata" asp-for="FormularComanda.DurataLuni">
+                        <option value="1">1 lună</option>
+                        <option value="3">3 luni</option>
+                        <option value="6">6 luni</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FormularComanda.DataInceput">Data de început</label>
+                    <input asp-for="FormularComanda.DataInceput" id="input-start" type="date"
+                           min="@azi.ToString("yyyy-MM-dd")"
+                           value="@azi.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="form-group">
+                    <label>Preț</label>
+                    <div id="pret-afisat" style="padding: 7px 12px; font-weight: bold; background: #f6f6fb; border: 1px solid #cfcfdf; border-radius: 4px; min-width: 90px; text-align: center;">
+                        -- MDL
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="btn-comanda" class="btn">Confirmă comanda</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="per">Perioadă</label>
-                <select id="per">
-                    @foreach (var p in AbonamenteData.Perioade.Values)
-                    {
-                        <option>@p</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="start">Data de început</label>
-                <input id="start" type="date">
-            </div>
-            <button type="button" class="btn" disabled>Confirmă comanda</button>
-        </div>
-        <p class="muted">Abonamentul este valabil pe toate mijloacele de transport din regiune. Plata se face în afara aplicației.</p>
+        </form>
+        <p class="muted" style="margin-top: 12px;">
+            Abonamentul este valabil pe toate mijloacele de transport din regiune. Plata se face în afara aplicației.
+        </p>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function() {
+            var tipuri = [
+                @foreach (var t in Model.TipuriDisponibile)
+                {
+                    <text>{ id: @t.Id, categorieId: @t.CategorieId, durataLuni: @t.DurataLuni, pret: @t.Pret, gratuit: @(t.EsteGratuit ? "true" : "false") },</text>
+                }
+            ];
+
+            var selectCat = document.getElementById('select-cat');
+            var selectDurata = document.getElementById('select-durata');
+            var inputTipId = document.getElementById('input-tip-id');
+            var pretAfisat = document.getElementById('pret-afisat');
+            var btnComanda = document.getElementById('btn-comanda');
+
+            function actualizeazaPret() {
+                if (!selectCat || !selectDurata) return;
+                var catId = parseInt(selectCat.value, 10);
+                var durata = parseInt(selectDurata.value, 10);
+
+                var tip = tipuri.find(function(t) {
+                    return t.categorieId === catId && t.durataLuni === durata;
+                });
+
+                if (tip) {
+                    if (inputTipId) inputTipId.value = tip.id;
+                    if (pretAfisat) {
+                        pretAfisat.textContent = tip.gratuit ? "Gratuit (0 MDL)" : tip.pret + " MDL";
+                    }
+                    if (btnComanda) btnComanda.disabled = false;
+                } else {
+                    if (inputTipId) inputTipId.value = "0";
+                    if (pretAfisat) pretAfisat.textContent = "Indisponibil";
+                    if (btnComanda) btnComanda.disabled = true;
+                }
+            }
+
+            if (selectCat) selectCat.addEventListener('change', actualizeazaPret);
+            if (selectDurata) selectDurata.addEventListener('change', actualizeazaPret);
+
+            actualizeazaPret();
+        })();
+    </script>
+}
