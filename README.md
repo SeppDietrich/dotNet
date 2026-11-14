@@ -207,6 +207,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
 | `/acces-interzis` | Acces refuzat | Funcțională |
 | `/cont` | Contul clientului | Machetă cu date fictive |
+| `/cont/profil` | Profilul clientului (editare date și parolă) | Funcțională |
 | `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare (indicatori reali) | Funcțională |
 | `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
@@ -280,6 +281,15 @@ Pagina principală de administrare a fost transformată dintr-o machetă static�
 * **Comenzi în ultima săptămână:** Comenzi plasate în ultimele 7 zile.
 * **Validări azi:** Numărul total de verificări rulate de controlori în cursul zilei curente.
 * **Conturi:** Numărul total de conturi de utilizator înregistrate în sistem.
+
+### 8.6. Profilul clientului și accesibilitate (/cont/profil)
+
+Modulul este accesibil utilizatorilor cu rolul `Client` și oferă gestionarea contului propriu și accesibilitate sporită conform WCAG 2.1 AA:
+
+* **Editare profil:** Clientul își poate actualiza numele, prenumele și adresa de e-mail (care este sincronizată automat și cu numele de utilizator). Schimbările se reflectă imediat în interfață și în cookie-ul de sesiune prin reînnoirea ștampilei de securitate.
+* **Schimbare parolă:** Formular dedicat cu confirmare și verificare a parolei curente, respectând cerințele de securitate Identity.
+* **Jurnalizare și audit:** Modificările aduse profilului și schimbările de parolă sunt înregistrate automat în jurnalul de audit prin `IJurnalService`.
+* **Accesibilitate și curățenie:** Link rapid „Sari la conținut” (skip link), tag semantic `<main>`, indicatori vizibili de focus pentru navigare de la tastatură, suport complet Tab pentru meniul dropdown, etichete asociate fiecărui câmp și eliminarea fișierelor nefolosite din șablonul inițial.
 
 ## 9. Lucrul în echipă
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TransAbon.Models;
+using TransAbon.Services;
 
 namespace TransAbon.Controllers;
 
@@ -9,7 +10,8 @@ namespace TransAbon.Controllers;
 [Route("cont/profil")]
 public class ProfilController(
     UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager) : Controller
+    SignInManager<ApplicationUser> signInManager,
+    IJurnalService jurnalService) : Controller
 {
     [HttpGet("")]
     public async Task<IActionResult> Index()
@@ -63,6 +65,7 @@ public class ProfilController(
 
         // Schimbarea resetează ștampila de securitate; reînnoim cookie-ul (și claim-ul nume_complet din navbar).
         await signInManager.RefreshSignInAsync(user);
+        await jurnalService.LogAsync(user.Id, "Actualizare profil", user.Email ?? email);
 
         TempData["MsgOk"] = "Datele contului au fost actualizate.";
         return RedirectToAction(nameof(Index));
@@ -92,6 +95,7 @@ public class ProfilController(
         }
 
         await signInManager.RefreshSignInAsync(user);
+        await jurnalService.LogAsync(user.Id, "Schimbare parolă", user.Email ?? "");
 
         TempData["MsgOk"] = "Parola a fost schimbată.";
         return RedirectToAction(nameof(Index));
