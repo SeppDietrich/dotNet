@@ -7,10 +7,13 @@
     <partial name="_StylesLink"/>
 </head>
 <body>
+<a class="skip-link" href="#continut">Sari la conținut</a>
 <!--Navbar-->
 <partial name="_Navbar"/>
 
-@RenderBody()
+<main id="continut" tabindex="-1">
+    @RenderBody()
+</main>
 
 <!--Footer-->
 <partial name="_Footer"/>
