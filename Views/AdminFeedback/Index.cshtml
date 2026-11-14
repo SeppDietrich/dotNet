@@ -1,0 +1,61 @@
+﻿@model AdminFeedbackViewModel
+@{
+    ViewData["Title"] = "Mesaje de feedback";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Mesaje de feedback</h1>
+            <p class="subtitle">Mesajele trimise prin formularul public, de la cel mai nou la cel mai vechi.</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn">Înapoi la panou</a>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi">
+            <span class="kpi-value">@Model.TotalMesaje</span>
+            <span class="kpi-label">Mesaje în total</span>
+        </div>
+        <div class="kpi">
+            <span class="kpi-value">@(Model.MediaEvaluarilor.HasValue ? Model.MediaEvaluarilor.Value.ToString("0.00") : "–")</span>
+            <span class="kpi-label">Media evaluărilor (din 5)</span>
+        </div>
+    </div>
+
+    <div class="panel">
+        @if (Model.Mesaje.Count == 0)
+        {
+            <p class="muted">Nu a fost trimis încă niciun mesaj prin formularul de feedback.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Nume</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Evaluare</th>
+                        <th scope="col">Mesaj</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var f in Model.Mesaje)
+                    {
+                        @* Razor codifică automat textul (@...), deci HTML-ul introdus de utilizator nu se execută. *@
+                        <tr>
+                            <td>@f.DataTrimiterii.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@f.Nume</td>
+                            <td>@f.Email</td>
+                            <td>@f.Evaluare / 5</td>
+                            <td style="white-space: pre-line;">@f.Mesaj</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
