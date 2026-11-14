@@ -1,0 +1,72 @@
+﻿@model ProfilPaginaViewModel
+@{
+    ViewData["Title"] = "Profilul meu";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Profilul meu</h1>
+            <p class="subtitle">Modifică datele contului sau schimbă parola.</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Client" class="btn">Înapoi la cont</a>
+    </div>
+
+    @if (TempData["MsgOk"] is string msgOk)
+    {
+        <div class="msg-ok" role="status">@msgOk</div>
+    }
+    <div asp-validation-summary="All" class="msg-err" role="alert"></div>
+
+    <div class="panel">
+        <h2>Date personale</h2>
+        <form asp-controller="Profil" asp-action="ActualizeazaDate" method="post">
+            @Html.AntiForgeryToken()
+            <div class="inline-form">
+                <div class="form-group">
+                    <label asp-for="Date.Nume"></label>
+                    <input asp-for="Date.Nume" type="text" autocomplete="family-name" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Date.Prenume"></label>
+                    <input asp-for="Date.Prenume" type="text" autocomplete="given-name" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Date.Email"></label>
+                    <input asp-for="Date.Email" type="email" autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Salvează datele</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2>Schimbă parola</h2>
+        <form asp-controller="Profil" asp-action="SchimbaParola" method="post">
+            @Html.AntiForgeryToken()
+            <div class="inline-form">
+                <div class="form-group">
+                    <label asp-for="Parola.ParolaCurenta"></label>
+                    <input asp-for="Parola.ParolaCurenta" type="password" autocomplete="current-password" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Parola.ParolaNoua"></label>
+                    <input asp-for="Parola.ParolaNoua" type="password" autocomplete="new-password" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Parola.ConfirmaParola"></label>
+                    <input asp-for="Parola.ConfirmaParola" type="password" autocomplete="new-password" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Schimbă parola</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
