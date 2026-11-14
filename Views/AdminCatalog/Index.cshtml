@@ -1,0 +1,199 @@
+﻿@model AdminCatalogViewModel
+@{
+    ViewData["Title"] = "Catalog abonamente";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Catalog de abonamente</h1>
+            <p class="subtitle">Categorii, durate și tarife (lei). Nimic nu se șterge: elementele se dezactivează.</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn">Înapoi la panou</a>
+    </div>
+
+    @if (TempData["MsgOk"] is string msgOk)
+    {
+        <div class="msg-ok" role="status">@msgOk</div>
+    }
+    @if (TempData["MsgErr"] is string msgErr)
+    {
+        <div class="msg-err" role="alert">@msgErr</div>
+    }
+
+    <div asp-validation-summary="All" class="msg-err" role="alert"></div>
+
+    <div class="panel">
+        <h2>Adaugă categorie</h2>
+        <form asp-controller="AdminCatalog" asp-action="CreeazaCategorie" method="post">
+            <div class="inline-form">
+                <div class="form-group">
+                    <label asp-for="FormCategorie.Nume"></label>
+                    <input asp-for="FormCategorie.Nume" type="text" maxlength="200" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormCategorie.Descriere"></label>
+                    <input asp-for="FormCategorie.Descriere" type="text" maxlength="500" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Adaugă categoria</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2>Adaugă tip de abonament</h2>
+        @if (Model.Categorii.Count == 0)
+        {
+            <p class="muted">Adaugă mai întâi o categorie.</p>
+        }
+        else
+        {
+            <form asp-controller="AdminCatalog" asp-action="CreeazaTip" method="post">
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label asp-for="FormTip.CategorieId"></label>
+                        <select asp-for="FormTip.CategorieId">
+                            <option value="">Alege...</option>
+                            @foreach (var c in Model.Categorii)
+                            {
+                                <option value="@c.Id">@c.Nume@(c.Activ ? "" : " (inactivă)")</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FormTip.DurataLuni"></label>
+                        <input asp-for="FormTip.DurataLuni" type="number" min="1" max="60" step="1" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FormTip.Pret"></label>
+                        <input asp-for="FormTip.Pret" type="number" min="0" step="1" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn">Adaugă tipul</button>
+                    </div>
+                </div>
+                <p class="muted">Preț 0 = abonament gratuit.</p>
+            </form>
+        }
+    </div>
+
+    @foreach (var c in Model.Categorii)
+    {
+        <div class="panel">
+            <div class="panel-head">
+                <h2>
+                    @c.Nume
+                    @if (c.Activ)
+                    {
+                        <span class="badge badge-activ">activă</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-anulat">inactivă</span>
+                    }
+                </h2>
+                <form asp-controller="AdminCatalog" asp-action="ComutaCategorie" method="post" style="display:inline">
+                    <input type="hidden" name="id" value="@c.Id" />
+                    @if (c.Activ)
+                    {
+                        <button type="submit" class="btn btn-sm btn-danger">Dezactivează categoria</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-sm">Reactivează categoria</button>
+                    }
+                </form>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(c.Descriere))
+            {
+                <p class="muted">@c.Descriere</p>
+            }
+
+            <details>
+                <summary>Modifică numele sau descrierea</summary>
+                <form asp-controller="AdminCatalog" asp-action="ModificaCategorie" method="post" style="margin-top:10px">
+                    <input type="hidden" name="Id" value="@c.Id" />
+                    <div class="inline-form">
+                        <div class="form-group">
+                            <label for="cat-nume-@c.Id">Nume</label>
+                            <input id="cat-nume-@c.Id" type="text" name="Nume" value="@c.Nume" maxlength="200" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="cat-descr-@c.Id">Descriere</label>
+                            <input id="cat-descr-@c.Id" type="text" name="Descriere" value="@c.Descriere" maxlength="500" />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-sm">Salvează</button>
+                        </div>
+                    </div>
+                </form>
+            </details>
+
+            @if (c.Tipuri.Count == 0)
+            {
+                <p class="muted">Această categorie nu are încă niciun tip de abonament.</p>
+            }
+            else
+            {
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Durată</th>
+                            <th>Preț actual</th>
+                            <th>Stare</th>
+                            <th>Acțiuni</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var t in c.Tipuri)
+                        {
+                            <tr>
+                                <td>@Formatare.Perioada(t.DurataLuni)</td>
+                                <td>@Formatare.Pret(t.Pret)</td>
+                                <td>
+                                    @if (t.Activ)
+                                    {
+                                        <span class="badge badge-activ">activ</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-anulat">inactiv</span>
+                                    }
+                                </td>
+                                <td class="actions">
+                                    <form asp-controller="AdminCatalog" asp-action="ModificaPret" method="post" style="display:inline">
+                                        <input type="hidden" name="Id" value="@t.Id" />
+                                        <input type="number" name="Pret" value="@t.Pret" min="0" step="1" required
+                                               style="width:100px"
+                                               aria-label="Preț nou în lei pentru @c.Nume, @Formatare.Perioada(t.DurataLuni)" />
+                                        <button type="submit" class="btn btn-sm">Salvează prețul</button>
+                                    </form>
+                                    <form asp-controller="AdminCatalog" asp-action="ComutaTip" method="post" style="display:inline">
+                                        <input type="hidden" name="id" value="@t.Id" />
+                                        @if (t.Activ)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-danger">Dezactivează</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm">Reactivează</button>
+                                        }
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
