@@ -203,7 +203,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/despre` | Despre | Funcțională |
 | `/abonamente` | Catalog și tarife | Funcțională (tarife din `AbonamenteData`) |
 | `/contact` | Contact | Funcțională |
-| `/feedback` | Formular feedback | Validează datele, **nu le salvează** |
+| `/feedback` | Formular feedback | Funcțională (salvează în baza de date) |
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
 | `/acces-interzis` | Acces refuzat | Funcțională |
 | `/cont` | Contul clientului | Machetă cu date fictive |
@@ -212,6 +212,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
 | `/admin/jurnal` | Jurnal de evenimente (audit) | Funcțională |
 | `/admin/rapoarte` | Rapoarte și export CSV | Funcțională |
+| `/admin/feedback` | Consultare mesaje feedback | Funcțională |
 
 Paginile marcate „machetă” sunt înlocuite de sarcinile din [docs/sarcini.md](docs/sarcini.md).
 
