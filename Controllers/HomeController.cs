@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TransAbon.Data;
 using TransAbon.Models;
 using TransAbon.Services;
 
@@ -10,11 +12,16 @@ public class HomeController : Controller
     private const string CurrentImageKey = "current_image";
 
     private readonly ICarouselService _carousel;
+    private readonly AppDbContext _db;
 
-    public HomeController(ICarouselService carousel) => _carousel = carousel;
+    public HomeController(ICarouselService carousel, AppDbContext db)
+    {
+        _carousel = carousel;
+        _db = db;
+    }
 
     [HttpGet("")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         var current = HttpContext.Session.GetInt32(CurrentImageKey) ?? 0;
 
@@ -24,7 +31,12 @@ public class HomeController : Controller
             DescriereProiect = "Aplicație Web prin care clienții comandă online abonamente de transport, " +
                                "iar controlorii verifică rapid valabilitatea lor prin codul unic al abonamentului.",
             CarouselSrc = _carousel.GetImageSrc(current),
-            Categorii = AbonamenteData.Categorii
+            Categorii = await _db.Categorii
+                .AsNoTracking()
+                .Where(c => c.Activ && c.Tipuri.Any(t => t.Activ))
+                .Include(c => c.Tipuri.Where(t => t.Activ).OrderBy(t => t.DurataLuni))
+                .OrderBy(c => c.Id)
+                .ToListAsync()
         };
         return View(model);
     }
