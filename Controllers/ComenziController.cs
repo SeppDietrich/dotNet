@@ -15,7 +15,8 @@ public class ComenziController(IAbonamentService abonamentService) : Controller
 
     [HttpPost("plaseaza")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> PlaseazaComanda(PlasareComandaViewModel model)
+    public async Task<IActionResult> PlaseazaComanda(
+        [Bind(Prefix = "FormularComanda")] PlasareComandaViewModel model)
     {
         var clientId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
 
