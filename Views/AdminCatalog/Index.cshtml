@@ -1,0 +1,168 @@
+@model AdminCatalogViewModel
+@{
+    ViewData["Title"] = "Catalog abonamente";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Catalog abonamente</h1>
+            <p class="subtitle">Categoriile de călători și tipurile de abonament (durată și preț). Elementele cu istoric nu se șterg, ci se dezactivează.</p>
+        </div>
+        <a asp-controller="Dashboard" asp-action="Admin" class="btn">Înapoi la panou</a>
+    </div>
+
+    @if (TempData["MsgOk"] is string msgOk)
+    {
+        <div class="msg-ok" role="status">@msgOk</div>
+    }
+    @if (TempData["MsgErr"] is string msgErr)
+    {
+        <div class="msg-err" role="alert">@msgErr</div>
+    }
+
+    <div class="panel">
+        <h2>Adaugă categorie</h2>
+        <form asp-controller="AdminCatalog" asp-action="AdaugaCategorie" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="msg-err"></div>
+            <div class="inline-form">
+                <div class="form-group">
+                    <label asp-for="FormularCategorie.Nume"></label>
+                    <input asp-for="FormularCategorie.Nume" type="text" maxlength="200" />
+                    <span asp-validation-for="FormularCategorie.Nume" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularCategorie.Descriere"></label>
+                    <input asp-for="FormularCategorie.Descriere" type="text" maxlength="500" />
+                    <span asp-validation-for="FormularCategorie.Descriere" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Adaugă categorie</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2>Adaugă tip de abonament</h2>
+        <form asp-controller="AdminCatalog" asp-action="AdaugaTip" method="post">
+            @Html.AntiForgeryToken()
+            <div class="inline-form">
+                <div class="form-group">
+                    <label asp-for="FormularTip.CategorieId"></label>
+                    <select asp-for="FormularTip.CategorieId">
+                        <option value="">— alege —</option>
+                        @foreach (var c in Model.Categorii)
+                        {
+                            <option value="@c.Id" selected="@(Model.FormularTip.CategorieId == c.Id)">@c.Nume@(c.Activ ? "" : " (inactivă)")</option>
+                        }
+                    </select>
+                    <span asp-validation-for="FormularTip.CategorieId" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularTip.DurataLuni"></label>
+                    <input asp-for="FormularTip.DurataLuni" type="number" min="1" max="120" step="1" />
+                    <span asp-validation-for="FormularTip.DurataLuni" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormularTip.Pret"></label>
+                    <input asp-for="FormularTip.Pret" type="number" min="0" step="1" />
+                    <span asp-validation-for="FormularTip.Pret" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Adaugă tip</button>
+                </div>
+            </div>
+            <p class="muted">Prețul este în lei, număr întreg. 0 înseamnă abonament gratuit.</p>
+        </form>
+    </div>
+
+    @if (Model.Categorii.Count == 0)
+    {
+        <div class="panel">
+            <p class="muted">Nu există încă nicio categorie.</p>
+        </div>
+    }
+
+    @foreach (var c in Model.Categorii)
+    {
+        <div class="panel">
+            <div class="panel-head">
+                <h2>
+                    @c.Nume
+                    <span class="badge @(c.Activ ? "badge-activ" : "badge-anulat")">@(c.Activ ? "Activă" : "Inactivă")</span>
+                </h2>
+                <form asp-controller="AdminCatalog" asp-action="SchimbaStareCategorie" asp-route-id="@c.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm @(c.Activ ? "btn-danger" : "")">@(c.Activ ? "Dezactivează categoria" : "Reactivează categoria")</button>
+                </form>
+            </div>
+
+            <form asp-controller="AdminCatalog" asp-action="ModificaCategorie" asp-route-id="@c.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label for="nume-@c.Id">Nume</label>
+                        <input id="nume-@c.Id" name="Nume" type="text" value="@c.Nume" maxlength="200" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="descriere-@c.Id">Descriere</label>
+                        <input id="descriere-@c.Id" name="Descriere" type="text" value="@c.Descriere" maxlength="500" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sm">Salvează</button>
+                    </div>
+                </div>
+            </form>
+
+            @if (c.Tipuri.Count == 0)
+            {
+                <p class="muted">Categoria nu are încă tipuri de abonament.</p>
+            }
+            else
+            {
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">Durată</th>
+                            <th scope="col" class="pret">Preț</th>
+                            <th scope="col">Stare</th>
+                            <th scope="col">Modifică prețul</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var t in c.Tipuri)
+                        {
+                            <tr>
+                                <td>@Tarife.EticheteDurata(t.DurataLuni)</td>
+                                <td class="pret">@(t.EsteGratuit ? "Gratuit" : $"{Tarife.FormateazaPret(t.Pret)} lei")</td>
+                                <td><span class="badge @(t.Activ ? "badge-activ" : "badge-anulat")">@(t.Activ ? "Activ" : "Inactiv")</span></td>
+                                <td>
+                                    <form asp-controller="AdminCatalog" asp-action="ModificaPret" asp-route-id="@t.Id" method="post" class="inline-form">
+                                        @Html.AntiForgeryToken()
+                                        <input name="Pret" type="number" min="0" step="1" value="@t.Pret" aria-label="Preț nou (lei)" required />
+                                        <button type="submit" class="btn btn-sm">Salvează</button>
+                                    </form>
+                                </td>
+                                <td class="actions">
+                                    <form asp-controller="AdminCatalog" asp-action="SchimbaStareTip" asp-route-id="@t.Id" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm @(t.Activ ? "btn-danger" : "")">@(t.Activ ? "Dezactivează" : "Reactivează")</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -24,13 +24,14 @@
                 <h3>@categorie.Nume</h3>
                 <p>@categorie.Descriere</p>
                 <p class="price">
-                    @if (categorie.EsteGratuit)
+                    @{ var pretMinim = categorie.Tipuri.Min(t => t.Pret); }
+                    @if (pretMinim == 0)
                     {
                         <text>Gratuit</text>
                     }
                     else
                     {
-                        <text>de la @(AbonamenteData.FormateazaPret(categorie.Preturi!.Values.Min())) lei</text>
+                        <text>de la @Tarife.FormateazaPret(pretMinim) lei</text>
                     }
                 </p>
             </div>

@@ -128,3 +128,14 @@
     border: 1px solid #cfcfdf;
     border-radius: 6px;
 }
+
+.field-error{
+    display: block;
+    color: #b3261e;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.field-error.field-validation-valid{
+    display: none;
+}

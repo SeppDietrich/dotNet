@@ -29,45 +29,9 @@
     <div class="panel">
         <div class="panel-head">
             <h2>Tipuri de abonament și tarife</h2>
-            <button type="button" class="btn" disabled>Adaugă tip de abonament</button>
+            <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Gestionează catalogul</a>
         </div>
-        <div class="table-wrap">
-            <table>
-                <thead>
-                <tr>
-                    <th>Categorie</th>
-                    @foreach (var p in AbonamenteData.Perioade.Values)
-                    {
-                        <th class="pret">@p</th>
-                    }
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var c in AbonamenteData.Categorii)
-                {
-                    <tr>
-                        <td>@c.Nume</td>
-                        @if (c.EsteGratuit)
-                        {
-                            <td class="pret" colspan="@AbonamenteData.Perioade.Count">Gratuit</td>
-                        }
-                        else
-                        {
-                            @foreach (var luni in AbonamenteData.Perioade.Keys)
-                            {
-                                <td class="pret">@(AbonamenteData.FormateazaPret(c.Preturi![luni])) lei</td>
-                            }
-                        }
-                        <td class="actions">
-                            <button type="button" class="btn btn-sm" disabled>Modifică</button>
-                            <button type="button" class="btn btn-sm btn-danger" disabled>Dezactivează</button>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+        <p class="muted">Adaugă, modifică, dezactivează sau reactivează categoriile de călători și tipurile de abonament (durată și preț).</p>
     </div>
 
     <div class="panel">

@@ -40,26 +40,26 @@ public static class DbSeeder
         }
     }
 
-    /// <summary>Încarcă categoriile și tipurile de abonament din AbonamenteData, dacă tabelele sunt goale.</summary>
     private static async Task SeedCatalogAsync(AppDbContext db)
     {
         if (await db.Categorii.AnyAsync()) return;
 
-        foreach (var sursa in AbonamenteData.Categorii)
+        var durate = new[] { 1, 3, 6 };
+        var catalog = new (string Nume, string Descriere, int[] Preturi)[]
         {
-            var categorie = new Categorie { Nume = sursa.Nume, Descriere = sursa.Descriere, Activ = true };
+            ("General", "Pentru toți călătorii.", [273, 693, 1134]),
+            ("Elev", "Pentru elevi.", [136, 346, 567]),
+            ("Student / angajat în educație și sănătate", "Pentru studenți, personal didactic și medical.", [191, 485, 794]),
+            ("Elevi clasele I–IV", "Abonament gratuit pentru elevii din clasele primare.", [0, 0, 0]),
+        };
 
-            foreach (var luni in AbonamenteData.Perioade.Keys)
+        foreach (var (nume, descriere, preturi) in catalog)
+        {
+            var categorie = new Categorie { Nume = nume, Descriere = descriere, Activ = true };
+            for (var i = 0; i < durate.Length; i++)
             {
-                categorie.Tipuri.Add(new TipAbonament
-                {
-                    DurataLuni = luni,
-                    // Preturi == null înseamnă categorie gratuită.
-                    Pret = sursa.Preturi?[luni] ?? 0,
-                    Activ = true
-                });
+                categorie.Tipuri.Add(new TipAbonament { DurataLuni = durate[i], Pret = preturi[i], Activ = true });
             }
-
             db.Categorii.Add(categorie);
         }
 
