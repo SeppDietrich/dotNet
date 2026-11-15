@@ -97,9 +97,10 @@
                 <div class="form-group">
                     <label for="select-durata">Perioadă</label>
                     <select id="select-durata" asp-for="FormularComanda.DurataLuni">
-                        <option value="1">1 lună</option>
-                        <option value="3">3 luni</option>
-                        <option value="6">6 luni</option>
+                        @foreach (var luni in Model.TipuriDisponibile.Select(t => t.DurataLuni).Distinct().Order())
+                        {
+                            <option value="@luni">@(luni == 1 ? "1 lună" : $"{luni} luni")</option>
+                        }
                     </select>
                 </div>
 
