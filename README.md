@@ -175,7 +175,7 @@ Reguli de colaborare pentru migrări sunt în [CONTRIBUTING.md](CONTRIBUTING.md)
 
 1. Creează rolurile `Client`, `Controlor`, `Administrator`.
 2. Creează conturile din `SeedUsers` (dacă există în configurare).
-3. Încarcă categoriile și tipurile de abonament din `AbonamenteData`, doar dacă tabelele sunt goale.
+3. Încarcă categoriile și tipurile de abonament inițiale (definite direct în `DbSeeder`), doar dacă tabelele sunt goale.
 4. Doar în Development: abonamente și controale demo pentru contul de client.
 
 ## 6. Configurare
@@ -199,9 +199,9 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 
 | Rută | Pagină | Stare |
 | --- | --- | --- |
-| `/` | Acasă (carusel, categorii, pași de comandă) | Funcțională (tarife din `AbonamenteData`) |
+| `/` | Acasă (carusel, categorii, pași de comandă) | Funcțională (tarife active din baza de date) |
 | `/despre` | Despre | Funcțională |
-| `/abonamente` | Catalog și tarife | Funcțională (tarife din `AbonamenteData`) |
+| `/abonamente` | Catalog și tarife | Funcțională (tarife active din baza de date) |
 | `/contact` | Contact | Funcțională |
 | `/feedback` | Formular feedback | Funcțională (salvează în baza de date) |
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
@@ -209,6 +209,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/cont` | Contul clientului (comandă, istoric și anulare) | Funcțională |
 | `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare (indicatori reali) | Funcțională |
+| `/admin/catalog` | Catalog: categorii, tipuri de abonament și tarife | Funcțională |
 | `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
 | `/admin/jurnal` | Jurnal de evenimente (audit) | Funcțională |
 | `/admin/rapoarte` | Rapoarte și export CSV | Funcțională |
