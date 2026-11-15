@@ -16,7 +16,21 @@ public class DashboardController(AppDbContext db) : Controller
 {
     [Authorize(Roles = AppRoles.Client)]
     [HttpGet("cont")]
-    public IActionResult Client() => View();
+    public async Task<IActionResult> Client([FromServices] IAbonamentService abonamentService)
+    {
+        var clientId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        var azi = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var model = new ClientDashboardViewModel
+        {
+            Abonamente = await abonamentService.ObtineAbonamenteClientAsync(clientId),
+            TipuriDisponibile = await abonamentService.ObtineTipuriActiveAsync(),
+            CategoriiDisponibile = await abonamentService.ObtineCategoriiActiveAsync(),
+            FormularComanda = new PlasareComandaViewModel { DataInceput = azi }
+        };
+
+        return View(model);
+    }
 
     [Authorize(Roles = AppRoles.Controlor)]
     [HttpGet("validare")]

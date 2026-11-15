@@ -175,7 +175,7 @@ Reguli de colaborare pentru migrări sunt în [CONTRIBUTING.md](CONTRIBUTING.md)
 
 1. Creează rolurile `Client`, `Controlor`, `Administrator`.
 2. Creează conturile din `SeedUsers` (dacă există în configurare).
-3. Încarcă categoriile și tipurile de abonament din `AbonamenteData`, doar dacă tabelele sunt goale.
+3. Încarcă categoriile și tipurile de abonament inițiale (definite direct în `DbSeeder`), doar dacă tabelele sunt goale.
 4. Doar în Development: abonamente și controale demo pentru contul de client.
 
 ## 6. Configurare
@@ -199,19 +199,21 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 
 | Rută | Pagină | Stare |
 | --- | --- | --- |
-| `/` | Acasă (carusel, categorii, pași de comandă) | Funcțională (tarife din `AbonamenteData`) |
+| `/` | Acasă (carusel, categorii, pași de comandă) | Funcțională (tarife active din baza de date) |
 | `/despre` | Despre | Funcțională |
-| `/abonamente` | Catalog și tarife | Funcțională (tarife din `AbonamenteData`) |
+| `/abonamente` | Catalog și tarife | Funcțională (tarife active din baza de date) |
 | `/contact` | Contact | Funcțională |
-| `/feedback` | Formular feedback | Validează datele, **nu le salvează** |
+| `/feedback` | Formular feedback | Funcțională (salvează în baza de date) |
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
 | `/acces-interzis` | Acces refuzat | Funcțională |
-| `/cont` | Contul clientului | Machetă cu date fictive |
+| `/cont` | Contul clientului (comandă, istoric și anulare) | Funcțională |
 | `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare (indicatori reali) | Funcțională |
+| `/admin/catalog` | Catalog: categorii, tipuri de abonament și tarife | Funcțională |
 | `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
 | `/admin/jurnal` | Jurnal de evenimente (audit) | Funcțională |
 | `/admin/rapoarte` | Rapoarte și export CSV | Funcțională |
+| `/admin/feedback` | Consultare mesaje feedback | Funcțională |
 
 Paginile marcate „machetă” sunt înlocuite de sarcinile din [docs/sarcini.md](docs/sarcini.md).
 
@@ -280,6 +282,17 @@ Pagina principală de administrare a fost transformată dintr-o machetă static�
 * **Comenzi în ultima săptămână:** Comenzi plasate în ultimele 7 zile.
 * **Validări azi:** Numărul total de verificări rulate de controlori în cursul zilei curente.
 * **Conturi:** Numărul total de conturi de utilizator înregistrate în sistem.
+
+### 8.6. Comanda online, consultarea și anularea abonamentelor de către client (/cont)
+
+Modulul este accesibil utilizatorilor cu rolul `Client` și implementează fluxul central al aplicației:
+
+* **Catalog și calcul tarifar dinamic:** Formularul de comandă citește în timp real categoriile și tipurile de abonament active din baza de date (`Categorii`, `TipuriAbonament`). Prețul comercial este afișat clar înainte de confirmare (conform Legii 284/2004).
+* **Generare criptografică de coduri unice:** La plasarea comenzii, aplicația generează un cod alfanumeric unic de forma `TA-XXXXXXXX` folosind un generator criptografic (`RandomNumberGenerator`), verificând unicitatea în baza de date.
+* **Calculul datei de expirare:** Se aplică formula standard `DataExpirare = DataInceput + durata în luni − 1 zi`. Data de început nu poate fi aleasă în trecut.
+* **Deducerea dinamică a stării:** Starea fiecărui abonament se deduce în funcție de `DateTime.UtcNow` (activ, programat, expirat, anulat).
+* **Anulare securizată pe server:** Clientul poate anula doar abonamentele proprii viitoare (programate, înainte de `DataInceput`). Odată anulat, abonamentul trece în stare `Anulat`, comanda devine `Anulata`, iar acțiunea se consemnează în jurnalul de audit prin `IJurnalService`.
+* **Tranzacționare în afara aplicației:** Nota legală privind decontarea în afara platformei este menținută vizibil.
 
 ## 9. Lucrul în echipă
 

@@ -1,3 +1,4 @@
+@model AbonamenteViewModel
 @{
     ViewData["Title"] = "Abonamente";
 }
@@ -6,35 +7,43 @@
     <h1>Abonamente</h1>
     <p class="subtitle">Prețurile sunt exprimate în lei (MDL). Abonamentele sunt valabile pe toate mijloacele de transport din regiune.</p>
 
-    <div class="table-wrap">
-        <table class="tabel-tarife">
-            <tr>
-                <th>Categorie</th>
-                @foreach (var perioada in AbonamenteData.Perioade.Values)
+    @if (Model.Categorii.Count == 0)
+    {
+        <p class="muted">Momentan nu există abonamente disponibile.</p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="tabel-tarife">
+                <tr>
+                    <th>Categorie</th>
+                    @foreach (var luni in Model.Durate)
+                    {
+                        <th class="pret">@Tarife.EticheteDurata(luni)</th>
+                    }
+                </tr>
+                @foreach (var categorie in Model.Categorii)
                 {
-                    <th class="pret">@perioada</th>
+                    if (categorie.Tipuri.All(t => t.EsteGratuit) && categorie.Tipuri.Count == Model.Durate.Count)
+                    {
+                        <tr class="gratuit">
+                            <td>@categorie.Nume</td>
+                            <td class="pret" colspan="@Model.Durate.Count">Gratuit</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@categorie.Nume</td>
+                            @foreach (var luni in Model.Durate)
+                            {
+                                var tip = categorie.Tipuri.FirstOrDefault(t => t.DurataLuni == luni);
+                                <td class="pret">@(tip is null ? "–" : tip.EsteGratuit ? "Gratuit" : $"{Tarife.FormateazaPret(tip.Pret)} lei")</td>
+                            }
+                        </tr>
+                    }
                 }
-            </tr>
-            @foreach (var categorie in AbonamenteData.Categorii)
-            {
-                if (categorie.EsteGratuit)
-                {
-                    <tr class="gratuit">
-                        <td>@categorie.Nume</td>
-                        <td class="pret" colspan="@AbonamenteData.Perioade.Count">Gratuit</td>
-                    </tr>
-                }
-                else
-                {
-                    <tr>
-                        <td>@categorie.Nume</td>
-                        @foreach (var luni in AbonamenteData.Perioade.Keys)
-                        {
-                            <td class="pret">@(AbonamenteData.FormateazaPret(categorie.Preturi![luni])) lei</td>
-                        }
-                    </tr>
-                }
-            }
-        </table>
-    </div>
+            </table>
+        </div>
+    }
 </div>
