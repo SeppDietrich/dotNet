@@ -206,7 +206,7 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/feedback` | Formular feedback | Validează datele, **nu le salvează** |
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
 | `/acces-interzis` | Acces refuzat | Funcțională |
-| `/cont` | Contul clientului | Machetă cu date fictive |
+| `/cont` | Contul clientului (comandă, istoric și anulare) | Funcțională |
 | `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare (indicatori reali) | Funcțională |
 | `/admin/utilizatori` | Administrare conturi și controlori | Funcțională |
@@ -280,6 +280,17 @@ Pagina principală de administrare a fost transformată dintr-o machetă static�
 * **Comenzi în ultima săptămână:** Comenzi plasate în ultimele 7 zile.
 * **Validări azi:** Numărul total de verificări rulate de controlori în cursul zilei curente.
 * **Conturi:** Numărul total de conturi de utilizator înregistrate în sistem.
+
+### 8.6. Comanda online, consultarea și anularea abonamentelor de către client (/cont)
+
+Modulul este accesibil utilizatorilor cu rolul `Client` și implementează fluxul central al aplicației:
+
+* **Catalog și calcul tarifar dinamic:** Formularul de comandă citește în timp real categoriile și tipurile de abonament active din baza de date (`Categorii`, `TipuriAbonament`). Prețul comercial este afișat clar înainte de confirmare (conform Legii 284/2004).
+* **Generare criptografică de coduri unice:** La plasarea comenzii, aplicația generează un cod alfanumeric unic de forma `TA-XXXXXXXX` folosind un generator criptografic (`RandomNumberGenerator`), verificând unicitatea în baza de date.
+* **Calculul datei de expirare:** Se aplică formula standard `DataExpirare = DataInceput + durata în luni − 1 zi`. Data de început nu poate fi aleasă în trecut.
+* **Deducerea dinamică a stării:** Starea fiecărui abonament se deduce în funcție de `DateTime.UtcNow` (activ, programat, expirat, anulat).
+* **Anulare securizată pe server:** Clientul poate anula doar abonamentele proprii viitoare (programate, înainte de `DataInceput`). Odată anulat, abonamentul trece în stare `Anulat`, comanda devine `Anulata`, iar acțiunea se consemnează în jurnalul de audit prin `IJurnalService`.
+* **Tranzacționare în afara aplicației:** Nota legală privind decontarea în afara platformei este menținută vizibil.
 
 ## 9. Lucrul în echipă
 
