@@ -1,0 +1,100 @@
+@model CategorieDetaliiViewModel
+@{
+    ViewData["Title"] = $"Detalii categorie – {Model.Categorie.Nume}";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Detalii categorie: @Model.Categorie.Nume</h1>
+            <p class="subtitle">Informații complete despre categoria selectată și tipurile de abonament asociate.</p>
+        </div>
+        <div class="actions">
+            <a asp-controller="AdminCatalog" asp-action="Editeaza" asp-route-id="@Model.Categorie.Id" class="btn">Editează</a>
+            <a asp-controller="AdminCatalog" asp-action="Sterge" asp-route-id="@Model.Categorie.Id" class="btn btn-danger">Șterge</a>
+            <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Înapoi la catalog</a>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Informații generale</h2>
+        <div class="table-wrap">
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row">Identificator unic (ID)</th>
+                        <td>#@Model.Categorie.Id</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Denumire</th>
+                        <td><strong>@Model.Categorie.Nume</strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Descriere</th>
+                        <td>@(string.IsNullOrWhiteSpace(Model.Categorie.Descriere) ? "—" : Model.Categorie.Descriere)</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Stare</th>
+                        <td>
+                            <span class="badge @(Model.Categorie.Activ ? "badge-activ" : "badge-anulat")">
+                                @(Model.Categorie.Activ ? "Activă" : "Inactivă")
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Număr tipuri de abonament</th>
+                        <td>@Model.Categorie.Tipuri.Count</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Comenzi / Abonamente emise</th>
+                        <td>@Model.NumarComenzi comenzi / @Model.NumarAbonamente abonamente</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Tipuri de abonament în această categorie (@Model.Categorie.Tipuri.Count)</h2>
+        @if (Model.Categorie.Tipuri.Count == 0)
+        {
+            <p class="muted">Această categorie nu are tipuri de abonament configurate.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Durată</th>
+                            <th scope="col" class="pret">Preț</th>
+                            <th scope="col">Stare</th>
+                            <th scope="col">Acțiuni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in Model.Categorie.Tipuri)
+                        {
+                            <tr>
+                                <td>#@t.Id</td>
+                                <td>@Tarife.EticheteDurata(t.DurataLuni)</td>
+                                <td class="pret">@(t.EsteGratuit ? "Gratuit" : $"{Tarife.FormateazaPret(t.Pret)} lei")</td>
+                                <td>
+                                    <span class="badge @(t.Activ ? "badge-activ" : "badge-anulat")">
+                                        @(t.Activ ? "Activ" : "Inactiv")
+                                    </span>
+                                </td>
+                                <td class="actions">
+                                    <a asp-controller="AdminCatalog" asp-action="DetaliiTip" asp-route-id="@t.Id" class="btn btn-sm">Detalii</a>
+                                    <a asp-controller="AdminCatalog" asp-action="EditeazaTip" asp-route-id="@t.Id" class="btn btn-sm">Editează</a>
+                                    <a asp-controller="AdminCatalog" asp-action="StergeTip" asp-route-id="@t.Id" class="btn btn-sm btn-danger">Șterge</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

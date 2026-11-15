@@ -1,0 +1,62 @@
+@model TipAbonamentEditViewModel
+@{
+    ViewData["Title"] = $"Editează tip abonament – #{Model.Id}";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Editează tipul de abonament #@Model.Id</h1>
+            <p class="subtitle">Categoria „@Model.CategorieNume”. Câmpurile marcate cu * sunt obligatorii, iar identificatorul unic nu poate fi modificat.</p>
+        </div>
+        <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+    </div>
+
+    <div class="panel">
+        <form asp-controller="AdminCatalog" asp-action="EditeazaTip" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CategorieId" />
+            <input type="hidden" asp-for="CategorieNume" />
+            <div asp-validation-summary="ModelOnly" class="msg-err"></div>
+
+            <div class="form-group">
+                <label for="id-tip-afisat">Identificator unic (ID)</label>
+                <input id="id-tip-afisat" type="text" value="#@Model.Id" disabled readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="categorie-afisata">Categorie</label>
+                <input id="categorie-afisata" type="text" value="@Model.CategorieNume" disabled readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DurataLuni"></label>
+                <input asp-for="DurataLuni" type="number" min="1" max="120" step="1" />
+                <span asp-validation-for="DurataLuni" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Pret"></label>
+                <input asp-for="Pret" type="number" min="0" step="1" />
+                <span asp-validation-for="Pret" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input asp-for="Activ" type="checkbox" />
+                    Tip de abonament activ
+                </label>
+            </div>
+
+            <div class="actions" style="margin-top: 1rem;">
+                <button type="submit" class="btn">Salvează modificările</button>
+                <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

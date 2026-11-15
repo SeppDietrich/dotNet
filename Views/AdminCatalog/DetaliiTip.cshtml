@@ -1,0 +1,59 @@
+@model TipAbonamentDetaliiViewModel
+@{
+    ViewData["Title"] = $"Detalii tip abonament – #{Model.Tip.Id}";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Detalii tip abonament #@Model.Tip.Id</h1>
+            <p class="subtitle">Informații despre tipul de abonament din categoria „@Model.Tip.Categorie.Nume”.</p>
+        </div>
+        <div class="actions">
+            <a asp-controller="AdminCatalog" asp-action="EditeazaTip" asp-route-id="@Model.Tip.Id" class="btn">Editează</a>
+            <a asp-controller="AdminCatalog" asp-action="StergeTip" asp-route-id="@Model.Tip.Id" class="btn btn-danger">Șterge</a>
+            <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Înapoi la catalog</a>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="table-wrap">
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row">Identificator unic (ID)</th>
+                        <td>#@Model.Tip.Id</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Categorie</th>
+                        <td>
+                            <a asp-controller="AdminCatalog" asp-action="Detalii" asp-route-id="@Model.Tip.CategorieId">
+                                <strong>@Model.Tip.Categorie.Nume</strong>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Durată</th>
+                        <td>@Tarife.EticheteDurata(Model.Tip.DurataLuni) (@Model.Tip.DurataLuni luni)</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Preț</th>
+                        <td>@(Model.Tip.EsteGratuit ? "Gratuit (0 lei)" : $"{Tarife.FormateazaPret(Model.Tip.Pret)} lei")</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Stare</th>
+                        <td>
+                            <span class="badge @(Model.Tip.Activ ? "badge-activ" : "badge-anulat")">
+                                @(Model.Tip.Activ ? "Activ" : "Inactiv")
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Comenzi / Abonamente emise</th>
+                        <td>@Model.NumarComenzi comenzi / @Model.NumarAbonamente abonamente</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

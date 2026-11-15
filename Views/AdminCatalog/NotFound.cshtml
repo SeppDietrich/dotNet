@@ -1,0 +1,17 @@
+@model CatalogNotFoundViewModel
+@{
+    ViewData["Title"] = "Înregistrare inexistentă";
+}
+
+<div class="container">
+    <div class="panel">
+        <h1>Înregistrarea nu a fost găsită (404)</h1>
+        <div class="msg-err" role="alert">
+            @Model.TipEntitate cu identificatorul <strong>#@Model.Id</strong> nu există în baza de date sau a fost eliminată.
+        </div>
+        <p class="muted">Verifică identificatorul căutat sau întoarce-te la lista din catalog.</p>
+        <div class="actions" style="margin-top: 1rem;">
+            <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Înapoi la catalog</a>
+        </div>
+    </div>
+</div>

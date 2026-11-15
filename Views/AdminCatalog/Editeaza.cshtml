@@ -1,0 +1,55 @@
+@model CategorieEditViewModel
+@{
+    ViewData["Title"] = $"Editează categorie – #{Model.Id}";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Editează categoria #@Model.Id</h1>
+            <p class="subtitle">Modifică datele categoriei. Câmpurile marcate cu * sunt obligatorii, iar identificatorul unic nu poate fi modificat.</p>
+        </div>
+        <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+    </div>
+
+    <div class="panel">
+        <form asp-controller="AdminCatalog" asp-action="Editeaza" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="msg-err"></div>
+
+            <div class="form-group">
+                <label for="id-afisat">Identificator unic (ID)</label>
+                <input id="id-afisat" type="text" value="#@Model.Id" disabled readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Nume"></label>
+                <input asp-for="Nume" type="text" maxlength="200" />
+                <span asp-validation-for="Nume" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descriere"></label>
+                <input asp-for="Descriere" type="text" maxlength="500" />
+                <span asp-validation-for="Descriere" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input asp-for="Activ" type="checkbox" />
+                    Categorie activă
+                </label>
+            </div>
+
+            <div class="actions" style="margin-top: 1rem;">
+                <button type="submit" class="btn">Salvează modificările</button>
+                <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

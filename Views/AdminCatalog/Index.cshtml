@@ -7,7 +7,7 @@
     <div class="panel-head">
         <div>
             <h1>Catalog abonamente</h1>
-            <p class="subtitle">Categoriile de călători și tipurile de abonament (durată și preț). Elementele cu istoric nu se șterg, ci se dezactivează.</p>
+            <p class="subtitle">Categoriile de călători și tipurile de abonament (durată și preț). Câmpurile marcate cu * sunt obligatorii.</p>
         </div>
         <a asp-controller="Dashboard" asp-action="Admin" class="btn">Înapoi la panou</a>
     </div>
@@ -21,7 +21,7 @@
         <div class="msg-err" role="alert">@msgErr</div>
     }
 
-    <div class="panel">
+    <div class="panel" id="adauga-categorie">
         <h2>Adaugă categorie</h2>
         <form asp-controller="AdminCatalog" asp-action="AdaugaCategorie" method="post">
             @Html.AntiForgeryToken()
@@ -44,7 +44,7 @@
         </form>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="adauga-tip">
         <h2>Adaugă tip de abonament</h2>
         <form asp-controller="AdminCatalog" asp-action="AdaugaTip" method="post">
             @Html.AntiForgeryToken()
@@ -53,7 +53,7 @@
                     <label asp-for="FormularTip.CategorieId"></label>
                     <select asp-for="FormularTip.CategorieId">
                         <option value="">— alege —</option>
-                        @foreach (var c in Model.Categorii)
+                        @foreach (var c in Model.ToateCategoriile)
                         {
                             <option value="@c.Id" selected="@(Model.FormularTip.CategorieId == c.Id)">@c.Nume@(c.Activ ? "" : " (inactivă)")</option>
                         }
@@ -78,12 +78,68 @@
         </form>
     </div>
 
-    @if (Model.Categorii.Count == 0)
-    {
-        <div class="panel">
-            <p class="muted">Nu există încă nicio categorie.</p>
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Categorii înregistrate (@Model.Categorii.Count)</h2>
+            <form asp-controller="AdminCatalog" asp-action="Index" method="get" class="filters">
+                <label for="cautare-catalog" class="muted">Căutare după denumire:</label>
+                <input id="cautare-catalog" type="text" name="cautare" value="@Model.Cautare" placeholder="Denumire sau descriere..." />
+                <button type="submit" class="btn btn-sm">Caută</button>
+                @if (!string.IsNullOrWhiteSpace(Model.Cautare))
+                {
+                    <a asp-controller="AdminCatalog" asp-action="Index" class="btn btn-sm">Resetează</a>
+                }
+            </form>
         </div>
-    }
+
+        @if (Model.Categorii.Count == 0)
+        {
+            @if (!string.IsNullOrWhiteSpace(Model.Cautare))
+            {
+                <p class="muted" role="status">Nu a fost găsită nicio înregistrare pentru denumirea „@Model.Cautare”.</p>
+            }
+            else
+            {
+                <p class="muted" role="status">Nu există încă nicio categorie înregistrată.</p>
+            }
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Denumire</th>
+                        <th scope="col">Descriere</th>
+                        <th scope="col">Tipuri abonament</th>
+                        <th scope="col">Stare</th>
+                        <th scope="col">Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var c in Model.Categorii)
+                    {
+                        <tr>
+                            <td>#@c.Id</td>
+                            <td><strong>@c.Nume</strong></td>
+                            <td>@(string.IsNullOrWhiteSpace(c.Descriere) ? "—" : c.Descriere)</td>
+                            <td>@c.Tipuri.Count</td>
+                            <td>
+                                <span class="badge @(c.Activ ? "badge-activ" : "badge-anulat")">@(c.Activ ? "Activă" : "Inactivă")</span>
+                            </td>
+                            <td class="actions">
+                                <a asp-controller="AdminCatalog" asp-action="Detalii" asp-route-id="@c.Id" class="btn btn-sm">Detalii</a>
+                                <a asp-controller="AdminCatalog" asp-action="Editeaza" asp-route-id="@c.Id" class="btn btn-sm">Editează</a>
+                                <a asp-controller="AdminCatalog" asp-action="Sterge" asp-route-id="@c.Id" class="btn btn-sm btn-danger">Șterge</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 
     @foreach (var c in Model.Categorii)
     {
@@ -93,10 +149,15 @@
                     @c.Nume
                     <span class="badge @(c.Activ ? "badge-activ" : "badge-anulat")">@(c.Activ ? "Activă" : "Inactivă")</span>
                 </h2>
-                <form asp-controller="AdminCatalog" asp-action="SchimbaStareCategorie" asp-route-id="@c.Id" method="post">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-sm @(c.Activ ? "btn-danger" : "")">@(c.Activ ? "Dezactivează categoria" : "Reactivează categoria")</button>
-                </form>
+                <div class="actions">
+                    <a asp-controller="AdminCatalog" asp-action="Detalii" asp-route-id="@c.Id" class="btn btn-sm">Detalii</a>
+                    <a asp-controller="AdminCatalog" asp-action="Editeaza" asp-route-id="@c.Id" class="btn btn-sm">Editează</a>
+                    <a asp-controller="AdminCatalog" asp-action="Sterge" asp-route-id="@c.Id" class="btn btn-sm btn-danger">Șterge</a>
+                    <form asp-controller="AdminCatalog" asp-action="SchimbaStareCategorie" asp-route-id="@c.Id" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm @(c.Activ ? "btn-danger" : "")">@(c.Activ ? "Dezactivează categoria" : "Reactivează categoria")</button>
+                    </form>
+                </div>
             </div>
 
             <form asp-controller="AdminCatalog" asp-action="ModificaCategorie" asp-route-id="@c.Id" method="post">
@@ -130,7 +191,7 @@
                             <th scope="col" class="pret">Preț</th>
                             <th scope="col">Stare</th>
                             <th scope="col">Modifică prețul</th>
-                            <th scope="col"></th>
+                            <th scope="col">Acțiuni</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -148,7 +209,10 @@
                                     </form>
                                 </td>
                                 <td class="actions">
-                                    <form asp-controller="AdminCatalog" asp-action="SchimbaStareTip" asp-route-id="@t.Id" method="post">
+                                    <a asp-controller="AdminCatalog" asp-action="DetaliiTip" asp-route-id="@t.Id" class="btn btn-sm">Detalii</a>
+                                    <a asp-controller="AdminCatalog" asp-action="EditeazaTip" asp-route-id="@t.Id" class="btn btn-sm">Editează</a>
+                                    <a asp-controller="AdminCatalog" asp-action="StergeTip" asp-route-id="@t.Id" class="btn btn-sm btn-danger">Șterge</a>
+                                    <form asp-controller="AdminCatalog" asp-action="SchimbaStareTip" asp-route-id="@t.Id" method="post" style="display:inline">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn btn-sm @(t.Activ ? "btn-danger" : "")">@(t.Activ ? "Dezactivează" : "Reactivează")</button>
                                     </form>

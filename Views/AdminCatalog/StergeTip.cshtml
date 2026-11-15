@@ -1,0 +1,68 @@
+@model TipAbonamentStergeViewModel
+@{
+    ViewData["Title"] = $"Șterge tip abonament – #{Model.Tip.Id}";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Confirmare ștergere tip abonament</h1>
+            <p class="subtitle">Verifică informațiile de mai jos înainte de a confirma ștergerea înregistrării din baza de date.</p>
+        </div>
+        <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+    </div>
+
+    <div class="panel">
+        <h2>Ești sigur că vrei să ștergi tipul de abonament #@Model.Tip.Id (@Model.Tip.Categorie.Nume – @Tarife.EticheteDurata(Model.Tip.DurataLuni))?</h2>
+
+        <div class="table-wrap" style="margin: 1rem 0;">
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row">Identificator unic (ID)</th>
+                        <td>#@Model.Tip.Id</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Categorie</th>
+                        <td><strong>@Model.Tip.Categorie.Nume</strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Durată</th>
+                        <td>@Tarife.EticheteDurata(Model.Tip.DurataLuni)</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Preț</th>
+                        <td>@(Model.Tip.EsteGratuit ? "Gratuit" : $"{Tarife.FormateazaPret(Model.Tip.Pret)} lei")</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Stare</th>
+                        <td>
+                            <span class="badge @(Model.Tip.Activ ? "badge-activ" : "badge-anulat")">
+                                @(Model.Tip.Activ ? "Activ" : "Inactiv")
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Comenzi / Abonamente în istoric</th>
+                        <td>@Model.NumarComenzi comenzi / @Model.NumarAbonamente abonamente</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.PoateFiSters)
+        {
+            <div class="msg-err" role="alert">
+                Acest tip de abonament are deja @Model.NumarComenzi comenzi și @Model.NumarAbonamente abonamente în istoric. Înregistrările cu istoric nu pot fi șterse fizic, ci doar dezactivate.
+            </div>
+        }
+
+        <form asp-controller="AdminCatalog" asp-action="StergeTip" asp-route-id="@Model.Tip.Id" method="post">
+            @Html.AntiForgeryToken()
+            <div class="actions" style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-danger">Confirmă ștergerea</button>
+                <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+            </div>
+        </form>
+    </div>
+</div>

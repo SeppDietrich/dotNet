@@ -1,0 +1,68 @@
+@model CategorieStergeViewModel
+@{
+    ViewData["Title"] = $"Șterge categorie – {Model.Categorie.Nume}";
+}
+
+<div class="container">
+    <div class="panel-head">
+        <div>
+            <h1>Confirmare ștergere categorie</h1>
+            <p class="subtitle">Verifică informațiile de mai jos înainte de a confirma ștergerea înregistrării din baza de date.</p>
+        </div>
+        <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+    </div>
+
+    <div class="panel">
+        <h2>Ești sigur că vrei să ștergi categoria „@Model.Categorie.Nume” (#@Model.Categorie.Id)?</h2>
+
+        <div class="table-wrap" style="margin: 1rem 0;">
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row">Identificator unic (ID)</th>
+                        <td>#@Model.Categorie.Id</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Denumire</th>
+                        <td><strong>@Model.Categorie.Nume</strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Descriere</th>
+                        <td>@(string.IsNullOrWhiteSpace(Model.Categorie.Descriere) ? "—" : Model.Categorie.Descriere)</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Stare</th>
+                        <td>
+                            <span class="badge @(Model.Categorie.Activ ? "badge-activ" : "badge-anulat")">
+                                @(Model.Categorie.Activ ? "Activă" : "Inactivă")
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Tipuri de abonament asociate</th>
+                        <td>@Model.Categorie.Tipuri.Count</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Comenzi / Abonamente în istoric</th>
+                        <td>@Model.NumarComenzi comenzi / @Model.NumarAbonamente abonamente</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @if (!Model.PoateFiStearsa)
+        {
+            <div class="msg-err" role="alert">
+                Această categorie are deja @Model.NumarComenzi comenzi și @Model.NumarAbonamente abonamente în istoric. Conform regulilor de integritate, înregistrările cu istoric nu pot fi șterse fizic, ci doar dezactivate.
+            </div>
+        }
+
+        <form asp-controller="AdminCatalog" asp-action="Sterge" asp-route-id="@Model.Categorie.Id" method="post">
+            @Html.AntiForgeryToken()
+            <div class="actions" style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-danger">Confirmă ștergerea</button>
+                <a asp-controller="AdminCatalog" asp-action="Index" class="btn">Anulează</a>
+            </div>
+        </form>
+    </div>
+</div>
