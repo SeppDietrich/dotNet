@@ -69,11 +69,15 @@ public class AbonamentService(AppDbContext db, IJurnalService jurnalService) : I
             }
 
             var poateFiAnulat = a.Stare == StareAbonament.Activ && azi < a.DataInceput;
+            var expiraInCurand = stareCalculata == StareAbonamentAfisata.Activ
+                                 && a.DataExpirare >= azi
+                                 && a.DataExpirare <= azi.AddDays(3);
 
             return new AbonamentClientItemViewModel
             {
                 Id = a.Id,
                 Cod = a.Cod,
+                CategorieId = a.TipAbonament?.CategorieId ?? 0,
                 Categorie = a.TipAbonament?.Categorie?.Nume ?? "Necunoscută",
                 DurataLuni = a.TipAbonament?.DurataLuni ?? 1,
                 Pret = a.TipAbonament?.Pret ?? 0,
@@ -81,7 +85,8 @@ public class AbonamentService(AppDbContext db, IJurnalService jurnalService) : I
                 DataExpirare = a.DataExpirare,
                 StareMemorata = a.Stare,
                 StareCalculata = stareCalculata,
-                PoateFiAnulat = poateFiAnulat
+                PoateFiAnulat = poateFiAnulat,
+                ExpiraInCurand = expiraInCurand
             };
         }).ToList();
     }

@@ -5,3 +5,33 @@ body{
     color: #2c2a2a;
     line-height: 1.5;
 }
+
+/* Link de accesibilitate: ascuns până primește focus (Tab) */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: #ffffff;
+    color: #000000;
+    padding: 8px 12px;
+    z-index: 1000;
+}
+.skip-link:focus {
+    left: 8px;
+    top: 8px;
+}
+
+/* Focus vizibil la navigarea de la tastatură */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #1a5fb4;
+    outline-offset: 2px;
+}
+
+/* Meniul dropdown se deschide și cu Tab */
+.dropdown-button:focus-within .dropdown-content {
+    display: block;
+}

@@ -50,6 +50,7 @@ public class AbonamentClientItemViewModel
 {
     public int Id { get; set; }
     public string Cod { get; set; } = "";
+    public int CategorieId { get; set; }
     public string Categorie { get; set; } = "";
     public int DurataLuni { get; set; }
     public string DurataText => DurataLuni == 1 ? "1 lună" : $"{DurataLuni} luni";
@@ -60,6 +61,7 @@ public class AbonamentClientItemViewModel
     public StareAbonament StareMemorata { get; set; }
     public StareAbonamentAfisata StareCalculata { get; set; }
     public bool PoateFiAnulat { get; set; }
+    public bool ExpiraInCurand { get; set; }
 
     public string BadgeClass => StareCalculata switch
     {

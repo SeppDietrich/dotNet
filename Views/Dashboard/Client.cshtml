@@ -11,6 +11,7 @@
             <h1>Contul meu</h1>
             <p class="subtitle">Bun venit, @(nume).</p>
         </div>
+        <a asp-controller="Profil" asp-action="Index" class="btn">Profilul meu</a>
     </div>
 
     @if (TempData["MsgOk"] is string msgOk)
@@ -20,6 +21,20 @@
     @if (TempData["MsgErr"] is string msgErr)
     {
         <div class="msg-err" role="alert">@msgErr</div>
+    }
+
+    @foreach (var exp in Model.Abonamente.Where(a => a.ExpiraInCurand))
+    {
+        var startReinnoire = exp.DataExpirare.AddDays(1).ToString("yyyy-MM-dd");
+        <div class="notice" role="status">
+            Abonamentul <strong>@exp.Cod</strong> (@exp.Categorie, @exp.DurataText) expiră în curând, la <strong>@exp.DataExpirare.ToString("yyyy-MM-dd")</strong>.
+            <button type="button" class="btn btn-sm btn-reinnoieste"
+                    data-cat="@exp.CategorieId"
+                    data-durata="@exp.DurataLuni"
+                    data-start="@startReinnoire">
+                Comandă reînnoire
+            </button>
+        </div>
     }
 
     <div class="panel">
@@ -170,6 +185,23 @@
 
             if (selectCat) selectCat.addEventListener('change', actualizeazaPret);
             if (selectDurata) selectDurata.addEventListener('change', actualizeazaPret);
+
+            var butoaneReinnoire = document.querySelectorAll('.btn-reinnoieste');
+            butoaneReinnoire.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var cat = btn.getAttribute('data-cat');
+                    var durata = btn.getAttribute('data-durata');
+                    var start = btn.getAttribute('data-start');
+                    var inputStart = document.getElementById('input-start');
+
+                    if (selectCat && cat) selectCat.value = cat;
+                    if (selectDurata && durata) selectDurata.value = durata;
+                    if (inputStart && start) inputStart.value = start;
+
+                    actualizeazaPret();
+                    if (selectCat) selectCat.focus();
+                });
+            });
 
             actualizeazaPret();
         })();

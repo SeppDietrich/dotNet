@@ -206,7 +206,8 @@ Nu comite niciodată parole, chei sau fișiere `.db` reale.
 | `/feedback` | Formular feedback | Funcțională (salvează în baza de date) |
 | `/autentificare`, `/inregistrare`, `/deconectare` | Autentificare, creare cont | Funcțională (Identity) |
 | `/acces-interzis` | Acces refuzat | Funcțională |
-| `/cont` | Contul clientului (comandă, istoric și anulare) | Funcțională |
+| `/cont` | Contul clientului (comandă, istoric, anulare și notificare expirare) | Funcțională |
+| `/cont/profil` | Editare profil și schimbare parolă client | Funcțională |
 | `/validare` | Validare abonamente | Funcțională |
 | `/admin` | Administrare (indicatori reali) | Funcțională |
 | `/admin/catalog` | Catalog: categorii, tipuri de abonament și tarife | Funcțională |

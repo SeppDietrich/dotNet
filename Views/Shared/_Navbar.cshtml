@@ -8,10 +8,10 @@
 <header class="site-header">
     <div class="list-header">
         <div class="dropdown-button nav-item">
-            <button type="button" class="icon-btn" aria-haspopup="true">
-                <img src="~/images/dropdown.png" alt="Meniu">
+            <button type="button" class="icon-btn" aria-haspopup="true" aria-label="Meniul principal">
+                <img src="~/images/dropdown.png" alt="" aria-hidden="true">
             </button>
-            <div class="dropdown-content">
+            <div class="dropdown-content" role="navigation" aria-label="Meniul principal">
                 <a asp-controller="Home" asp-action="Index">Acasă</a>
                 <a asp-controller="Home" asp-action="About">Despre</a>
                 <a asp-controller="Abonamente" asp-action="Index">Abonamente</a>
@@ -28,6 +28,7 @@
                 else if (esteClient)
                 {
                     <a asp-controller="Dashboard" asp-action="Client">Contul meu</a>
+                    <a asp-controller="Profil" asp-action="Index">Profilul meu</a>
                 }
             </div>
         </div>
